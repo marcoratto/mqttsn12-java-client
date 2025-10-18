@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: io.github.marcoratto.junit.mqttsn.TestPublisher
 -------------------------------------------------------------------------------
-Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 28.41 s -- in io.github.marcoratto.junit.mqttsn.TestPublisher
+Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 28.05 s -- in io.github.marcoratto.junit.mqttsn.TestPublisher

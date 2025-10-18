@@ -1,0 +1,52 @@
+@options
+@packages
+-classpath
+'/opt/maven_repository/org/apache/logging/log4j/log4j-core/2.20.0/log4j-core-2.20.0.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-api/2.20.0/log4j-api-2.20.0.jar:/opt/maven_repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/src/main/java:/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/generated-sources/annotations'
+-author
+-bottom
+'Copyright &#169; 2025. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'mqttsn12-java-client 1.0.0 API'
+-use
+-version
+-windowtitle
+'mqttsn12-java-client 1.0.0 API'
+io.github.marcoratto.mqttsn.util
+io.github.marcoratto.mqttsn
+io.github.marcoratto.mqttsn.packets
+/opt/maven_repository/org/apache/logging/log4j/log4j-core/2.20.0/log4j-core-2.20.0.jar = 1760783215317
+/opt/maven_repository/org/apache/logging/log4j/log4j-api/2.20.0/log4j-api-2.20.0.jar = 1760783215473
+/opt/maven_repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar = 1760783215589
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/src/main/java = 1760776027083
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/generated-sources/annotations = 1760784230870
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/constant-values.html = 1760784369482
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/tag-search-index.js = 1760784369725
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/overview-tree.html = 1760784369656
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/module-search-index.js = 1760784369713
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/index.html = 1760784369663
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/package-search-index.js = 1760784369718
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/jquery-ui.overrides.css = 1760784369790
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/serialized-form.html = 1760784369494
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/index-all.html = 1760784369756
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/allpackages-index.html = 1760784369707
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/member-search-index.js = 1760784369724
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/copy.svg = 1760784369769
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/script.js = 1760784369769
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/stylesheet.css = 1760784369767
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/overview-summary.html = 1760784369758
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/help-doc.html = 1760784369765
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/element-list = 1760784369423
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/allclasses-index.html = 1760784369693
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/type-search-index.js = 1760784369722
+/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/apidocs/search.js = 1760784369770

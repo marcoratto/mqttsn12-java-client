@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="54.135" tests="11" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="54.208" tests="11" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="18"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -13,7 +13,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="IT"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-18.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire/surefirebooter-20251018120900717_3.jar /Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire 2025-10-18T12-09-00_657-jvmRun1 surefire-20251018120900717_1tmp surefire_0-20251018120900717_2tmp"/>
+    <property name="sun.java.command" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire/surefirebooter-20251018124444771_3.jar /Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire 2025-10-18T12-44-44_712-jvmRun1 surefire-20251018124444771_1tmp surefire_0-20251018124444771_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/test-classes:/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/classes:/opt/maven_repository/junit/junit/4.13.2/junit-4.13.2.jar:/opt/maven_repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-core/2.20.0/log4j-core-2.20.0.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-api/2.20.0/log4j-api-2.20.0.jar:/opt/maven_repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/opt/maven_repository/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.5/org.eclipse.paho.client.mqttv3-1.2.5.jar:/opt/maven_repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -29,7 +29,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire/surefirebooter-20251018120900717_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire/surefirebooter-20251018124444771_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="18+36-2087"/>
     <property name="user.name" value="IH00294"/>
@@ -53,88 +53,88 @@
     <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
     <property name="java.class.version" value="62.0"/>
   </properties>
-  <testcase name="testSubscribeWildcards" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.847">
+  <testcase name="testSubscribeWildcards" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.949">
     <system-out><![CDATA[testSubscribeWildcards.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeWildcards()
 Ricevuto payload: offline
 Ricevuto payload: offline
-Ricevuto payload: Hello 65082
-Ricevuto payload: Hello 65082
-Ricevuto payload: Hello 65082
-Ricevuto payload: Hello 65082
-Ricevuto payload: Hello 38832
-Ricevuto payload: Hello 38832
-Ricevuto payload: Hello 38832
-Ricevuto payload: Hello 38832
-Ricevuto payload: Hello 22812
-Ricevuto payload: Hello 22812
+Ricevuto payload: Hello 62619
+Ricevuto payload: Hello 62619
+Ricevuto payload: Hello 62619
+Ricevuto payload: Hello 62619
+Ricevuto payload: Hello 51884
+Ricevuto payload: Hello 51884
+Ricevuto payload: Hello 51884
+Ricevuto payload: Hello 51884
+Ricevuto payload: Hello 50598
+Ricevuto payload: Hello 50598
 testSubscribeWildcards.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testSubscribeBigPayload" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.94">
+  <testcase name="testSubscribeBigPayload" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.951">
     <system-out><![CDATA[testSubscribeBigPayload.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeBigPayload()
-Ricevuto payload: Hello 44146Hello 47975Hello 32344Hello 65460Hello 40572Hello 7915Hello 29547Hello 8742Hello 27776Hello 1691
+Ricevuto payload: Hello 56122Hello 45102Hello 52910Hello 50524Hello 50659Hello 25153Hello 11357Hello 51320Hello 35710Hello 23242
 testSubscribeBigPayload.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testSubscribeMultipleLongTopicQos1" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.358">
+  <testcase name="testSubscribeMultipleLongTopicQos1" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.337">
     <system-out><![CDATA[testSubscribeMultipleLongTopicQos1.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeMultipleLongTopicQos1()
-Ricevuto payload: Hello 60247
-Ricevuto payload: Hello 1972
-Ricevuto payload: Hello 47625
+Ricevuto payload: Hello 12279
+Ricevuto payload: Hello 42538
+Ricevuto payload: Hello 61169
 testSubscribeMultipleLongTopicQos1.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testSubscribeShortTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.334">
+  <testcase name="testSubscribeShortTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.339">
     <system-out><![CDATA[testSubscribeShortTopic.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeShortTopic()
-Ricevuto payload: Hello 24153
+Ricevuto payload: Hello 11222
 testSubscribeShortTopic.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testUnSubscribeShortTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.342">
+  <testcase name="testUnSubscribeShortTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.337">
     <system-out><![CDATA[testUnSubscribeShortTopic.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testUnSubscribeShortTopic()
 testUnSubscribeShortTopic.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testSubscribeNormalTopicQos0" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.328">
+  <testcase name="testSubscribeNormalTopicQos0" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.326">
     <system-out><![CDATA[testSubscribeNormalTopicQos0.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeNormalTopicQos0()
-Ricevuto payload: Hello 33150
+Ricevuto payload: Hello 56105
 testSubscribeNormalTopicQos0.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testSubscribeNormalTopicQos1" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.331">
+  <testcase name="testSubscribeNormalTopicQos1" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.328">
     <system-out><![CDATA[testSubscribeNormalTopicQos1.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeNormalTopicQos1()
-Ricevuto payload: Hello 16162
+Ricevuto payload: Hello 34707
 testSubscribeNormalTopicQos1.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testPing" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="43.49">
+  <testcase name="testPing" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="43.483">
     <system-out><![CDATA[testPing.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testPing()
-Ricevuto payload: Hello 9481
+Ricevuto payload: Hello 17118
 testPing.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testSubscribePredefinedTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.428">
+  <testcase name="testSubscribePredefinedTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.475">
     <system-out><![CDATA[testSubscribePredefinedTopic.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeShortTopic()
-Ricevuto payload: Hello 61866
+Ricevuto payload: Hello 27610
 testSubscribePredefinedTopic.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testUnSubscribeNormalTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.384">
+  <testcase name="testUnSubscribeNormalTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.338">
     <system-out><![CDATA[testUnSubscribeNormalTopic.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testUnSubscribeNormalTopic()
 testUnSubscribeNormalTopic.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testUnSubscribePredefinedTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.344">
+  <testcase name="testUnSubscribePredefinedTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.337">
     <system-out><![CDATA[testUnSubscribePredefinedTopic.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testUnSubscribeShortTopic()
 testUnSubscribePredefinedTopic.tearDown()

@@ -1,0 +1,38 @@
+10
+
+dir
+3
+https://jquerysql.googlecode.com/svn/trunk/JQuerySQL/test/junit/uk
+https://jquerysql.googlecode.com/svn
+
+
+
+2012-07-10T09:45:09.717024Z
+3
+marcoratto@gmail.com
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+86554c87-cb38-b14f-2f44-7b853302705b
+
+
+
+
+
+
+0
+
+co
+dir
+

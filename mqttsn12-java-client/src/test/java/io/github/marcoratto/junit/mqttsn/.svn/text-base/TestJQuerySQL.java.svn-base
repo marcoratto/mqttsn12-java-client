@@ -1,0 +1,144 @@
+/*
+ * Copyright (C) 2009 Marco Ratto
+ *
+ * This file is part of the project AntTaskMqSeries.
+ *
+ * AntTaskMqSeries is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * any later version.
+ *
+ * AntTaskMqSeries is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AntTaskMqSeries; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+package uk.co.marcoratto.jquerysql;
+
+import java.io.OutputStream;
+import java.io.PrintStream;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import junit.textui.TestRunner;
+
+/**
+ * @author Marco Ratto
+ *
+ */
+public class TestJQuerySQL extends TestCase {
+	
+	private JQuerySQL jQuerySQL = null;
+	private PrintStream sysOut = System.out;
+	private PrintStream sysErr = System.err;
+    private StringBuffer outBuffer;
+    private StringBuffer errBuffer;
+    
+    private final static String DB_URL = "jdbc:db2://svuni056.iveco.com:50001/etms";
+    private final static String DB_DRIVER = "com.ibm.db2.jcc.DB2Driver";
+    private final static String DB_USER = "etmiveco";
+    private final static String DB_PASS = "etmivel0";
+
+	protected void setUp() {
+		System.out.println(this.getName() + ".setUp()");	
+		
+        try {
+        	jQuerySQL = new JQuerySQL();
+            sysOut.flush();
+            sysErr.flush();
+            outBuffer = new StringBuffer();
+            errBuffer = new StringBuffer();
+
+            PrintStream out = new PrintStream(new MyOutputStream(outBuffer));            
+            PrintStream err = new PrintStream(new MyOutputStream(errBuffer));
+            // System.setOut(out);
+            // System.setErr(err);
+        } catch (Throwable t) {
+			t.printStackTrace();
+			fail(t.getMessage());
+        }
+	}
+
+	protected void tearDown() {
+		System.out.println(this.getName() + ".tearDown()");
+	}
+
+	public static void main (String[] args) {
+		TestRunner.run(suite());
+	}
+	
+	public static Test suite() {
+		return new TestSuite(TestJQuerySQL.class);
+	}	
+
+	public void testHelp() {
+		System.out.println(this.getClass().getName() + ".testHelp()");
+		try {						
+			jQuerySQL.runme(new String[]{});
+		} catch (Throwable t) {
+			t.printStackTrace();
+			fail(t.getMessage());
+		} 		
+	}
+	
+	public void testSelectWithXml() {
+		System.out.println(this.getClass().getName() + ".testSelect()");
+		try {
+			String sql = "select * from ETM.USERINFO;";
+			String params[] = new String[] { "-driver", DB_DRIVER, 
+						   	"-url", DB_URL,
+						   	"-xml",
+						   	"-trim",
+						    "-username", DB_USER, 
+						    "-password", DB_PASS,
+						    "-file", "./ETM.USERINFO.xml",
+						    "-query", sql};
+			
+			jQuerySQL.runme(params);
+			// System.out.println(this.outBuffer);
+			// System.err.println(this.errBuffer);
+		} catch (Throwable t) {
+			t.printStackTrace();
+			fail(t.getMessage());
+		} 		
+	}
+	
+	public void testSelect() {
+		System.out.println(this.getClass().getName() + ".testSelect()");
+		try {
+			
+			// JQuerySQL.main(new String[] { "-v", "-d", "-f", "./TestMqSeries.xml", "clear1"});
+			String sql = "select distinct trim(lcase(USERID)) as USERNAME, trim(EMAIL) from ETM.USERINFO order by USERNAME;";
+			String params[] = new String[] { "-driver", DB_DRIVER, 
+						   	"-url", DB_URL, 
+						    "-username", DB_USER, 
+						    "-password", DB_PASS,
+						    "-query", sql};
+			
+			jQuerySQL.runme(params);
+			// System.out.println(this.outBuffer);
+			// System.err.println(this.errBuffer);
+		} catch (Throwable t) {
+			t.printStackTrace();
+			fail(t.getMessage());
+		} 		
+	}
+
+    private static class MyOutputStream extends OutputStream {
+        private StringBuffer buffer;
+
+        public MyOutputStream(StringBuffer buffer) {
+            this.buffer = buffer;
+        }
+
+        public void write(int b) {
+            buffer.append((char)b);
+        }
+    }
+
+}

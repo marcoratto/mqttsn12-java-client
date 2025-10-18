@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="53.174" tests="11" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="18"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/test-classes:/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/classes:/opt/maven_repository/junit/junit/4.13.2/junit-4.13.2.jar:/opt/maven_repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-core/2.20.0/log4j-core-2.20.0.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-api/2.20.0/log4j-api-2.20.0.jar:/opt/maven_repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/opt/maven_repository/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.5/org.eclipse.paho.client.mqttv3-1.2.5.jar:/opt/maven_repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.vendor.url" value="https://java.oracle.com/"/>
+    <property name="user.timezone" value="Europe/Rome"/>
+    <property name="os.name" value="Mac OS X"/>
+    <property name="java.vm.specification.version" value="18"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="IT"/>
+    <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-18.jdk/Contents/Home/lib"/>
+    <property name="sun.java.command" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire/surefirebooter-20251018120448303_3.jar /Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire 2025-10-18T12-04-48_254-jvmRun1 surefire-20251018120448303_1tmp surefire_0-20251018120448303_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/test-classes:/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/classes:/opt/maven_repository/junit/junit/4.13.2/junit-4.13.2.jar:/opt/maven_repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-core/2.20.0/log4j-core-2.20.0.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-api/2.20.0/log4j-api-2.20.0.jar:/opt/maven_repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/opt/maven_repository/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.5/org.eclipse.paho.client.mqttv3-1.2.5.jar:/opt/maven_repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="/Users/IH00294"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2022-03-22"/>
+    <property name="java.home" value="/Library/Java/JavaVirtualMachines/jdk-18.jdk/Contents/Home"/>
+    <property name="file.separator" value="/"/>
+    <property name="basedir" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="apple.awt.application.name" value="ForkedBooter"/>
+    <property name="surefire.real.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire/surefirebooter-20251018120448303_3.jar"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="18+36-2087"/>
+    <property name="user.name" value="IH00294"/>
+    <property name="path.separator" value=":"/>
+    <property name="os.version" value="26.0.1"/>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="localRepository" value="/opt/maven_repository"/>
+    <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
+    <property name="java.io.tmpdir" value="/var/folders/40/8yqylw7n1md_kwfz17sby7l80000gn/T/"/>
+    <property name="java.version" value="18"/>
+    <property name="user.dir" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client"/>
+    <property name="os.arch" value="aarch64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="native.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/Users/IH00294/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="java.vm.version" value="18+36-2087"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
+    <property name="java.class.version" value="62.0"/>
+  </properties>
+  <testcase name="testSubscribeWildcards" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.875">
+    <system-out><![CDATA[testSubscribeWildcards.setUp()
+io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeWildcards()
+Ricevuto payload: offline
+Ricevuto payload: offline
+Ricevuto payload: Hello 11258
+Ricevuto payload: Hello 11258
+Ricevuto payload: Hello 11258
+Ricevuto payload: Hello 11258
+Ricevuto payload: Hello 48688
+Ricevuto payload: Hello 48688
+Ricevuto payload: Hello 48688
+Ricevuto payload: Hello 48688
+Ricevuto payload: Hello 15546
+Ricevuto payload: Hello 15546
+testSubscribeWildcards.tearDown()
+]]></system-out>
+  </testcase>
+  <testcase name="testSubscribeBigPayload" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.972">
+    <system-out><![CDATA[testSubscribeBigPayload.setUp()
+io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeBigPayload()
+Ricevuto payload: Hello 16358Hello 13218Hello 62486Hello 4825Hello 45137Hello 28019Hello 23940Hello 32780Hello 52467Hello 32170
+testSubscribeBigPayload.tearDown()
+]]></system-out>
+  </testcase>
+  <testcase name="testSubscribeMultipleLongTopicQos1" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.35">
+    <system-out><![CDATA[testSubscribeMultipleLongTopicQos1.setUp()
+io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeMultipleLongTopicQos1()
+Ricevuto payload: Hello 49492
+Ricevuto payload: Hello 6872
+Ricevuto payload: Hello 17255
+testSubscribeMultipleLongTopicQos1.tearDown()
+]]></system-out>
+  </testcase>
+  <testcase name="testSubscribeShortTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.348">
+    <system-out><![CDATA[testSubscribeShortTopic.setUp()
+io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeShortTopic()
+Ricevuto payload: Hello 33106
+testSubscribeShortTopic.tearDown()
+]]></system-out>
+  </testcase>
+  <testcase name="testUnSubscribeShortTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.344">
+    <system-out><![CDATA[testUnSubscribeShortTopic.setUp()
+io.github.marcoratto.junit.mqttsn.TestSubscriber.testUnSubscribeShortTopic()
+testUnSubscribeShortTopic.tearDown()
+]]></system-out>
+  </testcase>
+  <testcase name="testSubscribeNormalTopicQos0" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.343">
+    <system-out><![CDATA[testSubscribeNormalTopicQos0.setUp()
+io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeNormalTopicQos0()
+Ricevuto payload: Hello 50043
+testSubscribeNormalTopicQos0.tearDown()
+]]></system-out>
+  </testcase>
+  <testcase name="testSubscribeNormalTopicQos1" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.333">
+    <system-out><![CDATA[testSubscribeNormalTopicQos1.setUp()
+io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeNormalTopicQos1()
+Ricevuto payload: Hello 38363
+testSubscribeNormalTopicQos1.tearDown()
+]]></system-out>
+  </testcase>
+  <testcase name="testPing" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="42.45">
+    <system-out><![CDATA[testPing.setUp()
+io.github.marcoratto.junit.mqttsn.TestSubscriber.testPing()
+Ricevuto payload: Hello 51116
+testPing.tearDown()
+]]></system-out>
+  </testcase>
+  <testcase name="testSubscribePredefinedTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.454">
+    <system-out><![CDATA[testSubscribePredefinedTopic.setUp()
+io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeShortTopic()
+Ricevuto payload: Hello 43602
+testSubscribePredefinedTopic.tearDown()
+]]></system-out>
+  </testcase>
+  <testcase name="testUnSubscribeNormalTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.34">
+    <system-out><![CDATA[testUnSubscribeNormalTopic.setUp()
+io.github.marcoratto.junit.mqttsn.TestSubscriber.testUnSubscribeNormalTopic()
+testUnSubscribeNormalTopic.tearDown()
+]]></system-out>
+  </testcase>
+  <testcase name="testUnSubscribePredefinedTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.344">
+    <system-out><![CDATA[testUnSubscribePredefinedTopic.setUp()
+io.github.marcoratto.junit.mqttsn.TestSubscriber.testUnSubscribeShortTopic()
+testUnSubscribePredefinedTopic.tearDown()
+]]></system-out>
+  </testcase>
+</testsuite>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WillMessagePacket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mqttsn12-java-client</a> &gt; <a href="index.source.html" class="el_package">io.github.marcoratto.mqttsn.packets</a> &gt; <span class="el_source">WillMessagePacket.java</span></div><h1>WillMessagePacket.java</h1><pre class="source lang-java linenums">/*
+MIT License
+
+Copyright (c) 2025 Marco Ratto
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+package io.github.marcoratto.mqttsn.packets;
+
+import java.nio.ByteBuffer;
+
+import io.github.marcoratto.mqttsn.MqttSnClientException;
+import io.github.marcoratto.mqttsn.MqttSnConstants;
+import io.github.marcoratto.mqttsn.util.HexUtils;
+
+public class WillMessagePacket {
+
+	private byte length;
+	private byte type;
+    private byte[] message;
+    
+<span class="fc" id="L38">    public WillMessagePacket() {</span>
+<span class="fc" id="L39">    	this.length = 0;</span>
+<span class="fc" id="L40">    	this.type = MqttSnConstants.TYPE_WILLMSG;</span>
+<span class="fc" id="L41">    	this.message = null;</span>
+<span class="fc" id="L42">    }</span>
+    
+    public String toString() {
+<span class="nc" id="L45">    	StringBuffer sb = new StringBuffer();</span>
+<span class="nc" id="L46">    	sb.append(&quot;length=&quot;)</span>
+<span class="nc" id="L47">    	.append(this.length)</span>
+<span class="nc" id="L48">    	.append(&quot;,type=&quot;)</span>
+<span class="nc" id="L49">    	.append(this.type)</span>
+<span class="nc" id="L50">    	.append(&quot;,data=&quot;)</span>
+<span class="nc" id="L51">    	.append(HexUtils.bytesToHex(message));</span>
+<span class="nc" id="L52">    	return sb.toString();</span>
+    }
+    
+	public void decode(byte[] value) {
+<span class="nc" id="L56">		ByteBuffer buffer = ByteBuffer.wrap(value);</span>
+		
+<span class="nc" id="L58">		this.length = (byte) buffer.get();</span>
+<span class="nc" id="L59">		this.type = (byte) buffer.get();</span>
+
+<span class="nc" id="L61">		this.message = new byte[this.length-2];</span>
+		
+<span class="nc bnc" id="L63" title="All 2 branches missed.">		for (int i = 0; i &lt; (this.length-2); i++) {</span>
+<span class="nc" id="L64">            byte b = buffer.get();</span>
+<span class="nc" id="L65">			this.message[i] = b;</span>
+        }			
+
+<span class="nc" id="L68">	}</span>
+    
+    public byte[] encode() throws MqttSnClientException {
+<span class="fc" id="L71">    	ByteBuffer buffer = null;</span>
+
+    	try {
+<span class="fc" id="L74">    		this.length = (byte) (2 + this.message.length);</span>
+<span class="fc" id="L75">    		buffer = ByteBuffer.allocate(length);</span>
+<span class="fc" id="L76">            buffer.put(this.length);          </span>
+<span class="fc" id="L77">            buffer.put(this.type); </span>
+<span class="fc" id="L78">            buffer.put(this.message);</span>
+<span class="nc" id="L79">		} catch (Exception e) {</span>
+<span class="nc" id="L80">			throw new MqttSnClientException(e);</span>
+<span class="fc" id="L81">		}</span>
+<span class="fc" id="L82">    	return buffer.array();</span>
+    }
+
+	public byte getType() {
+<span class="nc" id="L86">		return type;</span>
+	}
+	
+	public byte getLength() {
+<span class="nc" id="L90">		return this.length;</span>
+	}
+
+	public String getMessage() {
+<span class="nc" id="L94">		return new String(this.message, 0, this.message.length);</span>
+	}
+
+	public void setMessage(String value) throws MqttSnClientException {
+<span class="nc bnc" id="L98" title="All 4 branches missed.">        if (value != null &amp;&amp; value.trim().length() &gt; MqttSnConstants.MAX_PAYLOAD_LENGTH) {</span>
+<span class="nc" id="L99">            throw new MqttSnClientException(&quot;Will Message '&quot; + value + &quot;' is too long (max &quot; + MqttSnConstants.MAX_PAYLOAD_LENGTH + &quot;)&quot;);</span>
+        }
+<span class="nc" id="L101">        this.message = new byte[value.trim().length()];</span>
+<span class="nc" id="L102">		this.message = value.trim().getBytes();</span>
+<span class="nc" id="L103">	}</span>
+	
+	public void setMessage(byte[] value) throws MqttSnClientException {
+<span class="fc" id="L106">	   this.message = new byte[value.length];</span>
+<span class="fc" id="L107">       this.message = value;</span>
+<span class="fc" id="L108">	}</span>
+		
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

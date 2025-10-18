@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DisconnectReqPacket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mqttsn12-java-client</a> &gt; <a href="index.source.html" class="el_package">io.github.marcoratto.mqttsn.packets</a> &gt; <span class="el_source">DisconnectReqPacket.java</span></div><h1>DisconnectReqPacket.java</h1><pre class="source lang-java linenums">/*
+MIT License
+
+Copyright (c) 2025 Marco Ratto
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+package io.github.marcoratto.mqttsn.packets;
+
+import java.nio.ByteBuffer;
+
+import io.github.marcoratto.mqttsn.MqttSnClientException;
+import io.github.marcoratto.mqttsn.MqttSnConstants;
+
+public class DisconnectReqPacket {
+
+    private byte length;
+    private byte  type;
+    private short duration;
+    
+<span class="fc" id="L37">    public DisconnectReqPacket() {</span>
+<span class="fc" id="L38">    	this.length = 0;</span>
+<span class="fc" id="L39">    	this.type = MqttSnConstants.TYPE_DISCONNECT;</span>
+<span class="fc" id="L40">    	this.duration = 0;</span>
+<span class="fc" id="L41">    }</span>
+    
+    public String toString() {
+<span class="nc" id="L44">    	StringBuffer sb = new StringBuffer();</span>
+<span class="nc" id="L45">    	sb.append(&quot;length=&quot;)</span>
+<span class="nc" id="L46">    	.append(this.length)</span>
+<span class="nc" id="L47">    	.append(&quot;,type=&quot;)</span>
+<span class="nc" id="L48">    	.append(this.type)</span>
+<span class="nc" id="L49">    	.append(&quot;,duration=&quot;)</span>
+<span class="nc" id="L50">    	.append(this.duration);</span>
+<span class="nc" id="L51">    	return sb.toString();</span>
+    }
+    
+    public byte[] encode() throws MqttSnClientException {
+<span class="fc" id="L55">    	ByteBuffer buffer = null;</span>
+
+    	try {
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">            if (this.duration == 0) {</span>
+<span class="fc" id="L59">            	this.length = (byte) 0x02;              </span>
+            } else {
+<span class="nc" id="L61">            	this.length = (byte) 0x04;</span>
+            }
+<span class="fc" id="L63">    		buffer = ByteBuffer.allocate(this.length);</span>
+
+<span class="fc" id="L65">            buffer.put(length);       </span>
+<span class="fc" id="L66">            buffer.put(type);               </span>
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">            if (this.length == 4) {</span>
+<span class="nc" id="L68">            	 buffer.putShort(duration);</span>
+            } 
+<span class="nc" id="L70">		} catch (Exception e) {</span>
+<span class="nc" id="L71">			throw new MqttSnClientException(e);</span>
+<span class="fc" id="L72">		}</span>
+<span class="fc" id="L73">    	return buffer.array();</span>
+    }
+    
+	public void decode(byte[] value) {
+<span class="nc" id="L77">		ByteBuffer buffer = ByteBuffer.wrap(value);</span>
+<span class="nc" id="L78">		this.length = (byte) buffer.get();</span>
+<span class="nc" id="L79">		this.type = (byte) buffer.get();</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">		if (this.length == 4) {</span>
+<span class="nc" id="L81">			this.duration = (short) buffer.getShort();</span>
+		}
+<span class="nc" id="L83">	}</span>
+
+	public byte getLength() {
+<span class="nc" id="L86">		return length;</span>
+	}
+
+	public byte getType() {
+<span class="nc" id="L90">		return type;</span>
+	}
+
+	public short getDuration() {
+<span class="nc" id="L94">		return duration;</span>
+	}
+
+	public void setDuration(short duration) {
+<span class="fc" id="L98">		this.duration = duration;</span>
+<span class="fc" id="L99">	}</span>
+    
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

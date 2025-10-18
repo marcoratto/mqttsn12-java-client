@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WillTopicResPacket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mqttsn12-java-client</a> &gt; <a href="index.source.html" class="el_package">io.github.marcoratto.mqttsn.packets</a> &gt; <span class="el_source">WillTopicResPacket.java</span></div><h1>WillTopicResPacket.java</h1><pre class="source lang-java linenums">/*
+MIT License
+
+Copyright (c) 2025 Marco Ratto
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+package io.github.marcoratto.mqttsn.packets;
+
+import java.nio.ByteBuffer;
+
+import io.github.marcoratto.mqttsn.MqttSnClientException;
+import io.github.marcoratto.mqttsn.MqttSnConstants;
+
+public class WillTopicResPacket {
+    
+	private byte length;
+	private byte type;
+	private byte returnCode;
+	
+<span class="fc" id="L37">	public WillTopicResPacket() {</span>
+<span class="fc" id="L38">		this.length = 0;</span>
+<span class="fc" id="L39">		this.type = MqttSnConstants.TYPE_WILLTOPICRESP;</span>
+<span class="fc" id="L40">		this.returnCode = 0;</span>
+<span class="fc" id="L41">	}</span>
+	
+    public String toString() {
+<span class="nc" id="L44">    	StringBuffer sb = new StringBuffer();</span>
+<span class="nc" id="L45">    	sb.append(&quot;length=&quot;)</span>
+<span class="nc" id="L46">    	.append(this.length)</span>
+<span class="nc" id="L47">    	.append(&quot;,type=&quot;)</span>
+<span class="nc" id="L48">    	.append(this.type)</span>
+<span class="nc" id="L49">    	.append(&quot;,returnCode=&quot;)</span>
+<span class="nc" id="L50">    	.append(returnCode);</span>
+<span class="nc" id="L51">    	return sb.toString();</span>
+    }
+	
+	public void decode(byte[] value) {
+<span class="fc" id="L55">		ByteBuffer buffer = ByteBuffer.wrap(value);</span>
+<span class="fc" id="L56">		this.length = (byte) buffer.get();</span>
+<span class="fc" id="L57">		this.type = (byte) buffer.get();</span>
+<span class="fc" id="L58">		this.returnCode = (byte) buffer.get();</span>
+<span class="fc" id="L59">	}</span>
+	
+    public byte[] encode() throws MqttSnClientException {
+<span class="nc" id="L62">    	ByteBuffer buffer = null;</span>
+<span class="nc" id="L63">    	this.length = 3;</span>
+    	try {   		
+<span class="nc" id="L65">    		buffer = ByteBuffer.allocate(length);</span>
+<span class="nc" id="L66">            buffer.put(this.length);          </span>
+<span class="nc" id="L67">            buffer.put(this.type); </span>
+<span class="nc" id="L68">            buffer.put(this.returnCode);</span>
+<span class="nc" id="L69">		} catch (Exception e) {</span>
+<span class="nc" id="L70">			throw new MqttSnClientException(e);</span>
+<span class="nc" id="L71">		}</span>
+<span class="nc" id="L72">    	return buffer.array();</span>
+    }
+
+	public byte getLength() {
+<span class="nc" id="L76">		return this.length;</span>
+	}
+
+	public byte getType() {
+<span class="fc" id="L80">		return this.type;</span>
+	}
+
+	public byte getReturnCode() {
+<span class="fc" id="L84">		return this.returnCode;</span>
+	}
+
+	public void setLength(byte length) {
+<span class="nc" id="L88">		this.length = length;</span>
+<span class="nc" id="L89">	}</span>
+
+	public void setType(byte type) {
+<span class="nc" id="L92">		this.type = type;</span>
+<span class="nc" id="L93">	}</span>
+
+	public void setReturnCode(byte returnCode) {
+<span class="nc" id="L96">		this.returnCode = returnCode;</span>
+<span class="nc" id="L97">	}</span>
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

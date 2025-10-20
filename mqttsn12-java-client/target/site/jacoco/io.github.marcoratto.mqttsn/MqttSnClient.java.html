@@ -777,9 +777,9 @@ public class MqttSnClient {
             }
 
             // Check if we have timed out waiting for the packet we are looking for
-<span class="pc bpc" id="L780" title="1 of 2 branches missed.">            if ((now - startedWaiting) &gt;= this.getTimeoutMillis()) {</span>
-<span class="nc" id="L781">                logger.warn(&quot;Timed out while waiting for a '&quot; + MqttSnUtility.decodeType(type) +&quot;' from gateway.&quot;);</span>
-<span class="nc" id="L782">                break;</span>
+<span class="fc bfc" id="L780" title="All 2 branches covered.">            if ((now - startedWaiting) &gt;= this.getTimeoutMillis()) {</span>
+<span class="fc" id="L781">                logger.warn(&quot;Timed out while waiting for a '&quot; + MqttSnUtility.decodeType(type) +&quot;' from gateway.&quot;);</span>
+<span class="fc" id="L782">                break;</span>
             }
 <span class="fc" id="L784">        }</span>
 

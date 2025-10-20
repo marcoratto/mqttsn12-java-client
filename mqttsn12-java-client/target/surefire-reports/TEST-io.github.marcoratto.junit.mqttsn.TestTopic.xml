@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.056" tests="34" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.022" tests="34" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="18"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
-    <property name="java.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/test-classes:/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/classes:/opt/maven_repository/junit/junit/4.13.2/junit-4.13.2.jar:/opt/maven_repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-core/2.20.0/log4j-core-2.20.0.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-api/2.20.0/log4j-api-2.20.0.jar:/opt/maven_repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/opt/maven_repository/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.5/org.eclipse.paho.client.mqttv3-1.2.5.jar:/opt/maven_repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:"/>
+    <property name="java.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/test-classes:/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/classes:/opt/maven_repository/junit/junit/4.13.2/junit-4.13.2.jar:/opt/maven_repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-core/2.20.0/log4j-core-2.20.0.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-api/2.20.0/log4j-api-2.20.0.jar:/opt/maven_repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-slf4j2-impl/2.20.0/log4j-slf4j2-impl-2.20.0.jar:/opt/maven_repository/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.5/org.eclipse.paho.client.mqttv3-1.2.5.jar:/opt/maven_repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.vendor.url" value="https://java.oracle.com/"/>
@@ -13,9 +13,9 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="IT"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-18.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire/surefirebooter-20251018124444771_3.jar /Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire 2025-10-18T12-44-44_712-jvmRun1 surefire-20251018124444771_1tmp surefire_0-20251018124444771_2tmp"/>
+    <property name="sun.java.command" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire/surefirebooter-20251020163722300_3.jar /Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire 2025-10-20T16-37-22_251-jvmRun1 surefire-20251020163722300_1tmp surefire_0-20251020163722300_2tmp"/>
     <property name="jdk.debug" value="release"/>
-    <property name="surefire.test.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/test-classes:/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/classes:/opt/maven_repository/junit/junit/4.13.2/junit-4.13.2.jar:/opt/maven_repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-core/2.20.0/log4j-core-2.20.0.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-api/2.20.0/log4j-api-2.20.0.jar:/opt/maven_repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/opt/maven_repository/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.5/org.eclipse.paho.client.mqttv3-1.2.5.jar:/opt/maven_repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:"/>
+    <property name="surefire.test.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/test-classes:/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/classes:/opt/maven_repository/junit/junit/4.13.2/junit-4.13.2.jar:/opt/maven_repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-core/2.20.0/log4j-core-2.20.0.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-api/2.20.0/log4j-api-2.20.0.jar:/opt/maven_repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-slf4j2-impl/2.20.0/log4j-slf4j2-impl-2.20.0.jar:/opt/maven_repository/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.5/org.eclipse.paho.client.mqttv3-1.2.5.jar:/opt/maven_repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="user.home" value="/Users/IH00294"/>
     <property name="user.language" value="en"/>
@@ -29,7 +29,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire/surefirebooter-20251018124444771_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire/surefirebooter-20251020163722300_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="18+36-2087"/>
     <property name="user.name" value="IH00294"/>
@@ -59,13 +59,13 @@ io.github.marcoratto.junit.mqttsn.TestTopic.test10()
 test10.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test11" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
+  <testcase name="test11" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test11.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test11()
 test11.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test12" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
+  <testcase name="test12" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test12.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test12()
 test12.tearDown()
@@ -77,49 +77,49 @@ io.github.marcoratto.junit.mqttsn.TestTopic.test13()
 test13.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test14" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.002">
+  <testcase name="test14" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test14.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test14()
 test14.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test15" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.011">
+  <testcase name="test15" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test15.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test15()
 test15.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test16" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.003">
+  <testcase name="test16" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test16.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test16()
 test16.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test17" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.003">
+  <testcase name="test17" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
     <system-out><![CDATA[test17.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test17()
 test17.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test18" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.002">
+  <testcase name="test18" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
     <system-out><![CDATA[test18.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test18()
 test18.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test19" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
+  <testcase name="test19" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test19.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test19()
 test19.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test20" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.002">
+  <testcase name="test20" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
     <system-out><![CDATA[test20.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test20()
 test20.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test21" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
+  <testcase name="test21" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test21.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test21()
 test21.tearDown()
@@ -131,25 +131,25 @@ io.github.marcoratto.junit.mqttsn.TestTopic.test22()
 test22.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test23" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.002">
+  <testcase name="test23" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test23.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test23()
 test23.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test24" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.004">
+  <testcase name="test24" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
     <system-out><![CDATA[test24.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test24()
 test24.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test25" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.002">
+  <testcase name="test25" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test25.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test25()
 test25.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test26" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
+  <testcase name="test26" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test26.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test26()
 test26.tearDown()
@@ -173,7 +173,7 @@ io.github.marcoratto.junit.mqttsn.TestTopic.test29()
 test29.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test30" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
+  <testcase name="test30" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test30.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test30()
 test30.tearDown()
@@ -197,13 +197,13 @@ io.github.marcoratto.junit.mqttsn.TestTopic.test33()
 test33.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test34" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
+  <testcase name="test34" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test34.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test34()
 test34.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test1" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.002">
+  <testcase name="test1" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
     <system-out><![CDATA[test1.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test1()
 test1.tearDown()
@@ -215,7 +215,7 @@ io.github.marcoratto.junit.mqttsn.TestTopic.test2()
 test2.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test3" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
+  <testcase name="test3" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
     <system-out><![CDATA[test3.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test3()
 test3.tearDown()
@@ -227,7 +227,7 @@ io.github.marcoratto.junit.mqttsn.TestTopic.test4()
 test4.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test5" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
+  <testcase name="test5" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test5.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test5()
 test5.tearDown()
@@ -239,13 +239,13 @@ io.github.marcoratto.junit.mqttsn.TestTopic.test6()
 test6.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test7" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
+  <testcase name="test7" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test7.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test7()
 test7.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="test8" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.001">
+  <testcase name="test8" classname="io.github.marcoratto.junit.mqttsn.TestTopic" time="0.0">
     <system-out><![CDATA[test8.setUp()
 io.github.marcoratto.junit.mqttsn.TestTopic.test8()
 test8.tearDown()

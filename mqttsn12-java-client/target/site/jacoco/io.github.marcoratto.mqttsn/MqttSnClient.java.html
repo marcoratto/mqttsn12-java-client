@@ -51,6 +51,9 @@ import io.github.marcoratto.mqttsn.packets.DisconnectResPacket;
 import io.github.marcoratto.mqttsn.packets.GatewayInfoPacket;
 import io.github.marcoratto.mqttsn.packets.PingReqPacket;
 import io.github.marcoratto.mqttsn.packets.PubAckPacket;
+import io.github.marcoratto.mqttsn.packets.PubRecPacket;
+import io.github.marcoratto.mqttsn.packets.PubRelPacket;
+import io.github.marcoratto.mqttsn.packets.PubCompPacket;
 import io.github.marcoratto.mqttsn.packets.PublishPacket;
 import io.github.marcoratto.mqttsn.packets.RegackPacket;
 import io.github.marcoratto.mqttsn.packets.RegisterPacket;
@@ -71,952 +74,1036 @@ import io.github.marcoratto.mqttsn.util.HexUtils;
 
 public class MqttSnClient {
 	
-	public final static String VERSION = &quot;1.0.0&quot;;
+	public final static String VERSION = &quot;1.1.0&quot;;
 	
-<span class="fc" id="L76">	private final static Logger logger = LoggerFactory.getLogger(MqttSnClient.class);</span>
+<span class="fc" id="L79">	private final static Logger logger = LoggerFactory.getLogger(MqttSnClient.class);</span>
 	
 	public static void main(String[] args) {
-<span class="nc" id="L79">		System.out.println(VERSION);</span>
-<span class="nc" id="L80">	}</span>
+<span class="nc" id="L82">		System.out.println(VERSION);</span>
+<span class="nc" id="L83">	}</span>
 
-<span class="fc" id="L82">	public MqttSnClient() {</span>
-<span class="fc" id="L83">		this.port = MqttSnConstants.DEFAULT_PORT;</span>
-<span class="fc" id="L84">		this.timeout = MqttSnConstants.DEFAULT_TIMEOUT;</span>
-<span class="fc" id="L85">		this.keepAlive = MqttSnConstants.DEFAULT_KEEP_ALIVE;</span>
-<span class="fc" id="L86">		this.clientID = &quot;mqtt-sn-java-&quot; + (new Random().nextInt() &amp; 0xffff);</span>
-<span class="fc" id="L87">		this.nextMessageID = 1;		</span>
-<span class="fc" id="L88">		this.willMessage = null;</span>
-<span class="fc" id="L89">		this.willTopic = null;</span>
-<span class="fc" id="L90">		this.willQos = 0;</span>
-<span class="fc" id="L91">		this.willRetain = false;</span>
-<span class="fc" id="L92">		this.connected = false;</span>
-<span class="fc" id="L93">		this.reuseAddress = true;</span>
-<span class="fc" id="L94">	}</span>
+<span class="fc" id="L85">	public MqttSnClient() {</span>
+<span class="fc" id="L86">		this.port = MqttSnConstants.DEFAULT_PORT;</span>
+<span class="fc" id="L87">		this.timeout = MqttSnConstants.DEFAULT_TIMEOUT;</span>
+<span class="fc" id="L88">		this.keepAlive = MqttSnConstants.DEFAULT_KEEP_ALIVE;</span>
+<span class="fc" id="L89">		this.clientID = &quot;mqtt-sn-java-&quot; + (new Random().nextInt() &amp; 0xffff);</span>
+<span class="fc" id="L90">		this.nextMessageID = 1;		</span>
+<span class="fc" id="L91">		this.willMessage = null;</span>
+<span class="fc" id="L92">		this.willTopic = null;</span>
+<span class="fc" id="L93">		this.willQos = 0;</span>
+<span class="fc" id="L94">		this.willRetain = false;</span>
+<span class="fc" id="L95">		this.connected = false;</span>
+<span class="fc" id="L96">		this.reuseAddress = true;</span>
+<span class="fc" id="L97">	}</span>
 
     public void open(String host, int port) throws MqttSnClientException {
         try {
-<span class="fc" id="L98">        	this.open(InetAddress.getByName(host), port);</span>
-<span class="nc" id="L99">		} catch (UnknownHostException e) {</span>
-<span class="nc" id="L100">			throw new MqttSnClientException(e);</span>
-<span class="fc" id="L101">		} </span>
+<span class="fc" id="L101">        	this.open(InetAddress.getByName(host), port);</span>
+<span class="nc" id="L102">		} catch (UnknownHostException e) {</span>
+<span class="nc" id="L103">			throw new MqttSnClientException(e);</span>
+<span class="fc" id="L104">		} </span>
         
-<span class="fc" id="L103">    }</span>
+<span class="fc" id="L106">    }</span>
     
     public void open(InetAddress host, int port) throws MqttSnClientException {
-<span class="fc" id="L106">		this.port = port;</span>
-<span class="fc" id="L107">		this.address = host;</span>
+<span class="fc" id="L109">		this.port = port;</span>
+<span class="fc" id="L110">		this.address = host;</span>
 		try {
-<span class="fc" id="L109">        	this.datagramSocket = new DatagramSocket();</span>
-<span class="fc" id="L110">        	this.datagramSocket.setSoTimeout((int) this.getTimeoutMillis());</span>
-<span class="fc" id="L111">        	this.datagramSocket.setReuseAddress(this.reuseAddress);</span>
-<span class="fc" id="L112">			logger.debug(&quot;Socket opened.&quot;);</span>
-<span class="fc" id="L113">			this.connected = true;</span>
-<span class="nc" id="L114">		} catch (SocketException e) {</span>
-<span class="nc" id="L115">			throw new MqttSnClientException(e);</span>
-<span class="fc" id="L116">		}   </span>
-<span class="fc" id="L117">    }</span>
+<span class="fc" id="L112">        	this.datagramSocket = new DatagramSocket();</span>
+<span class="fc" id="L113">        	this.datagramSocket.setSoTimeout((int) this.getTimeoutMillis());</span>
+<span class="fc" id="L114">        	this.datagramSocket.setReuseAddress(this.reuseAddress);</span>
+<span class="fc" id="L115">			logger.debug(&quot;Socket opened.&quot;);</span>
+<span class="fc" id="L116">			this.connected = true;</span>
+<span class="nc" id="L117">		} catch (SocketException e) {</span>
+<span class="nc" id="L118">			throw new MqttSnClientException(e);</span>
+<span class="fc" id="L119">		}   </span>
+<span class="fc" id="L120">    }</span>
     
     public void close() throws MqttSnClientException {
-<span class="pc bpc" id="L120" title="1 of 2 branches missed.">    	if (datagramSocket != null) {</span>
-<span class="fc" id="L121">    		logger.debug(&quot;Socket closed.&quot;);</span>
-<span class="fc" id="L122">   			datagramSocket.close();	</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">    	if (datagramSocket != null) {</span>
+<span class="fc" id="L124">    		logger.debug(&quot;Socket closed.&quot;);</span>
+<span class="fc" id="L125">   			datagramSocket.close();	</span>
     	}
-<span class="fc" id="L124">    	this.connected = false;</span>
-<span class="fc" id="L125">    }</span>
+<span class="fc" id="L127">    	this.connected = false;</span>
+<span class="fc" id="L128">    }</span>
     
     public boolean isConnected() {
-<span class="nc" id="L128">		return connected;</span>
+<span class="nc" id="L131">		return connected;</span>
 	}
     
     public void sendSubscribe(String topic_filter, int qos, MqttSnListener aMqttSnCallback) throws MqttSnClientException {
-<span class="fc" id="L132">    	int topic_len = topic_filter.length();</span>
-<span class="fc" id="L133">        SubPacket subPacket = new SubPacket();</span>
+<span class="fc" id="L135">    	int topic_len = topic_filter.length();</span>
+<span class="fc" id="L136">        SubPacket subPacket = new SubPacket();</span>
      
-<span class="fc" id="L135">        byte flags = 0x00;</span>
-<span class="fc" id="L136">        flags += MqttSnUtility.getQosFlag(qos);</span>
+<span class="fc" id="L138">        byte flags = 0x00;</span>
+<span class="fc" id="L139">        flags += MqttSnUtility.getQosFlag(qos);</span>
         
-<span class="fc bfc" id="L138" title="All 2 branches covered.">        if (topic_len == 2) {</span>
-<span class="fc" id="L139">            flags += MqttSnConstants.TOPIC_TYPE_SHORT;</span>
-<span class="fc" id="L140">            byte[] topic_name = topic_filter.getBytes();</span>
-<span class="fc" id="L141">            short topic_id = (short) ((topic_name[0] &lt;&lt; 8) + topic_name[1]);</span>
-<span class="fc" id="L142">            subPacket.setTopicID(topic_id);</span>
-<span class="fc" id="L143">        } else {</span>
-<span class="fc" id="L144">            flags += MqttSnConstants.TOPIC_TYPE_NORMAL;</span>
-<span class="fc" id="L145">            subPacket.setTopicName(topic_filter);</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">        if (topic_len == 2) {</span>
+<span class="fc" id="L142">            flags += MqttSnConstants.TOPIC_TYPE_SHORT;</span>
+<span class="fc" id="L143">            byte[] topic_name = topic_filter.getBytes();</span>
+<span class="fc" id="L144">            short topic_id = (short) ((topic_name[0] &lt;&lt; 8) + topic_name[1]);</span>
+<span class="fc" id="L145">            subPacket.setTopicID(topic_id);</span>
+<span class="fc" id="L146">        } else {</span>
+<span class="fc" id="L147">            flags += MqttSnConstants.TOPIC_TYPE_NORMAL;</span>
+<span class="fc" id="L148">            subPacket.setTopicName(topic_filter);</span>
         }
-<span class="fc" id="L147">        subPacket.setFlags((byte) flags);</span>
-<span class="fc" id="L148">        subPacket.setMessageID((short) this.nextMessageID++);</span>
+<span class="fc" id="L150">        subPacket.setFlags((byte) flags);</span>
+<span class="fc" id="L151">        subPacket.setMessageID((short) this.nextMessageID++);</span>
         
-<span class="fc" id="L150">        this.sendPacket(subPacket.encode());</span>
+<span class="fc" id="L153">        this.sendPacket(subPacket.encode());</span>
         
-<span class="fc" id="L152">        short topic_id = this.receiveSuback();</span>
+<span class="fc" id="L155">        short topic_id = this.receiveSuback();</span>
         
-<span class="pc bpc" id="L154" title="1 of 4 branches missed.">       	if ((topic_id &gt; 0) &amp;&amp; (topic_len &gt; 2)) {</span>
-<span class="fc" id="L155">			this.registerTopic(topic_id, topic_filter);     </span>
-<span class="fc" id="L156">			this.addMqttSnCallback(topic_filter, aMqttSnCallback);</span>
-<span class="pc bpc" id="L157" title="1 of 4 branches missed.">	    } else if ((topic_id == 0) &amp;&amp; (topic_len == 2)) {</span>
+<span class="pc bpc" id="L157" title="1 of 4 branches missed.">       	if ((topic_id &gt; 0) &amp;&amp; (topic_len &gt; 2)) {</span>
+<span class="fc" id="L158">			this.registerTopic(topic_id, topic_filter);     </span>
+<span class="fc" id="L159">			this.addMqttSnCallback(topic_filter, aMqttSnCallback);</span>
+<span class="pc bpc" id="L160" title="1 of 4 branches missed.">	    } else if ((topic_id == 0) &amp;&amp; (topic_len == 2)) {</span>
         	// topic_id = this.sendRegister(topic);
-<span class="fc" id="L159">            byte[] topic_name = topic_filter.getBytes();</span>
-<span class="fc" id="L160">            topic_id = (short) ((topic_name[0] &lt;&lt; 8) + topic_name[1]); </span>
-<span class="fc" id="L161">            this.addMqttSnCallback(topic_id, aMqttSnCallback);</span>
-<span class="fc" id="L162">	    } else {</span>
-<span class="fc" id="L163">	    	this.addMqttSnCallback(topic_filter, aMqttSnCallback);</span>
+<span class="fc" id="L162">            byte[] topic_name = topic_filter.getBytes();</span>
+<span class="fc" id="L163">            topic_id = (short) ((topic_name[0] &lt;&lt; 8) + topic_name[1]); </span>
+<span class="fc" id="L164">            this.addMqttSnCallback(topic_id, aMqttSnCallback);</span>
+<span class="fc" id="L165">	    } else {</span>
+<span class="fc" id="L166">	    	this.addMqttSnCallback(topic_filter, aMqttSnCallback);</span>
 	    }
        	
-<span class="fc" id="L166">    }</span>
+<span class="fc" id="L169">    }</span>
      
     public void sendSubscribe(short topic_id, int qos, MqttSnListener aMqttSnCallback) throws MqttSnClientException {
-<span class="fc" id="L169">    	SubPacket subscribePacket = new SubPacket();</span>
+<span class="fc" id="L172">    	SubPacket subscribePacket = new SubPacket();</span>
 
-<span class="fc" id="L171">        byte flags = 0x00;</span>
-<span class="fc" id="L172">        flags += MqttSnUtility.getQosFlag(qos);</span>
-<span class="fc" id="L173">        flags += MqttSnConstants.TOPIC_TYPE_PREDEFINED;</span>
-<span class="fc" id="L174">        subscribePacket.setFlags((byte) flags);</span>
+<span class="fc" id="L174">        byte flags = 0x00;</span>
+<span class="fc" id="L175">        flags += MqttSnUtility.getQosFlag(qos);</span>
+<span class="fc" id="L176">        flags += MqttSnConstants.TOPIC_TYPE_PREDEFINED;</span>
+<span class="fc" id="L177">        subscribePacket.setFlags((byte) flags);</span>
         
-<span class="fc" id="L176">        subscribePacket.setMessageID((short) this.nextMessageID++);</span>
-<span class="fc" id="L177">        subscribePacket.setTopicID(topic_id);</span>
+<span class="fc" id="L179">        subscribePacket.setMessageID((short) this.nextMessageID++);</span>
+<span class="fc" id="L180">        subscribePacket.setTopicID(topic_id);</span>
 
-<span class="fc" id="L179">        this.sendPacket(subscribePacket.encode());</span>
+<span class="fc" id="L182">        this.sendPacket(subscribePacket.encode());</span>
         
-<span class="fc" id="L181">        this.receiveSuback();</span>
+<span class="fc" id="L184">        this.receiveSuback();</span>
         
-<span class="fc" id="L183">        this.addMqttSnCallback(topic_id, aMqttSnCallback);</span>
-<span class="fc" id="L184">    }</span>
+<span class="fc" id="L186">        this.addMqttSnCallback(topic_id, aMqttSnCallback);</span>
+<span class="fc" id="L187">    }</span>
     
     public void sendUnSubscribe(String topic_name) throws MqttSnClientException {
-<span class="fc" id="L187">        int topic_name_len = topic_name.length();</span>
-<span class="fc" id="L188">        UnsubscribePacket unsubscribePacket = new UnsubscribePacket();</span>
+<span class="fc" id="L190">        int topic_name_len = topic_name.length();</span>
+<span class="fc" id="L191">        UnsubscribePacket unsubscribePacket = new UnsubscribePacket();</span>
 
-<span class="fc" id="L190">        byte flags = 0;</span>
+<span class="fc" id="L193">        byte flags = 0;</span>
         
-<span class="fc bfc" id="L192" title="All 2 branches covered.">        if (topic_name_len == 2) {</span>
-<span class="fc" id="L193">            flags += MqttSnConstants.TOPIC_TYPE_SHORT;</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">        if (topic_name_len == 2) {</span>
+<span class="fc" id="L196">            flags += MqttSnConstants.TOPIC_TYPE_SHORT;</span>
         } else {
-<span class="fc" id="L195">            flags += MqttSnConstants.TOPIC_TYPE_NORMAL;</span>
+<span class="fc" id="L198">            flags += MqttSnConstants.TOPIC_TYPE_NORMAL;</span>
         }
-<span class="fc" id="L197">        unsubscribePacket.setFlags((byte) flags);</span>
-<span class="fc" id="L198">        unsubscribePacket.setMessageID((short) this.nextMessageID++);</span>
-<span class="fc" id="L199">        unsubscribePacket.setTopicName(topic_name);</span>
-<span class="fc" id="L200">        this.sendPacket(unsubscribePacket.encode());</span>
+<span class="fc" id="L200">        unsubscribePacket.setFlags((byte) flags);</span>
+<span class="fc" id="L201">        unsubscribePacket.setMessageID((short) this.nextMessageID++);</span>
+<span class="fc" id="L202">        unsubscribePacket.setTopicName(topic_name);</span>
+<span class="fc" id="L203">        this.sendPacket(unsubscribePacket.encode());</span>
         
-<span class="fc" id="L202">        this.receiveUnsuback();</span>
+<span class="fc" id="L205">        this.receiveUnsuback();</span>
         
-<span class="fc" id="L204">        Short topic_id = this.searchTopicId(topic_name);</span>
-<span class="fc bfc" id="L205" title="All 2 branches covered.">        if (topic_id != null) {</span>
-<span class="fc" id="L206">        	this.unregisterTopic(topic_id);</span>
+<span class="fc" id="L207">        Short topic_id = this.searchTopicId(topic_name);</span>
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        if (topic_id != null) {</span>
+<span class="fc" id="L209">        	this.unregisterTopic(topic_id);</span>
         }   
-<span class="fc" id="L208">    }</span>
+<span class="fc" id="L211">    }</span>
     
     public void sendUnSubscribe(short topic_id) throws MqttSnClientException {
-<span class="fc" id="L211">    	UnsubscribePacket unsubscribePacket = new UnsubscribePacket();</span>
-<span class="fc" id="L212">        byte flags = 0x00;</span>
-<span class="fc" id="L213">        flags += MqttSnConstants.TOPIC_TYPE_PREDEFINED;</span>
-<span class="fc" id="L214">        unsubscribePacket.setFlags((byte) flags);</span>
+<span class="fc" id="L214">    	UnsubscribePacket unsubscribePacket = new UnsubscribePacket();</span>
+<span class="fc" id="L215">        byte flags = 0x00;</span>
+<span class="fc" id="L216">        flags += MqttSnConstants.TOPIC_TYPE_PREDEFINED;</span>
+<span class="fc" id="L217">        unsubscribePacket.setFlags((byte) flags);</span>
         
-<span class="fc" id="L216">        unsubscribePacket.setMessageID((short) this.nextMessageID++);</span>
-<span class="fc" id="L217">        unsubscribePacket.setTopicID(topic_id);</span>
+<span class="fc" id="L219">        unsubscribePacket.setMessageID((short) this.nextMessageID++);</span>
+<span class="fc" id="L220">        unsubscribePacket.setTopicID(topic_id);</span>
 
-<span class="fc" id="L219">        this.sendPacket(unsubscribePacket.encode());</span>
+<span class="fc" id="L222">        this.sendPacket(unsubscribePacket.encode());</span>
         
-<span class="fc" id="L221">        this.receiveUnsuback();</span>
+<span class="fc" id="L224">        this.receiveUnsuback();</span>
         
-<span class="fc" id="L223">        this.unregisterTopic(topic_id);</span>
-<span class="fc" id="L224">    }</span>
+<span class="fc" id="L226">        this.unregisterTopic(topic_id);</span>
+<span class="fc" id="L227">    }</span>
     
     public void sendWillMessageUpdate(String aWillMessage) throws MqttSnClientException {
-<span class="fc" id="L227">    	this.willMessage = aWillMessage.getBytes();</span>
+<span class="fc" id="L230">    	this.willMessage = aWillMessage.getBytes();</span>
     	
     	byte[] response;
-<span class="fc" id="L230">        WillMessageUpdatePacket willMessageUpdatePacket = new WillMessageUpdatePacket();</span>
-<span class="fc" id="L231">        willMessageUpdatePacket.setMessage(this.willMessage);</span>
-<span class="fc" id="L232">        this.sendPacket(willMessageUpdatePacket.encode());</span>
+<span class="fc" id="L233">        WillMessageUpdatePacket willMessageUpdatePacket = new WillMessageUpdatePacket();</span>
+<span class="fc" id="L234">        willMessageUpdatePacket.setMessage(this.willMessage);</span>
+<span class="fc" id="L235">        this.sendPacket(willMessageUpdatePacket.encode());</span>
                 
-<span class="fc" id="L234">        response = this.receivePacketSync();</span>
+<span class="fc" id="L237">        response = this.receivePacketSync();</span>
         
-<span class="pc bpc" id="L236" title="1 of 2 branches missed.">        if (response == null) {</span>
-<span class="nc" id="L237">            throw new MqttSnClientException(&quot;Failed to connect to MQTT-SN gateway.&quot;);</span>
+<span class="pc bpc" id="L239" title="1 of 2 branches missed.">        if (response == null) {</span>
+<span class="nc" id="L240">            throw new MqttSnClientException(&quot;Failed to connect to MQTT-SN gateway.&quot;);</span>
         }
-<span class="fc" id="L239">        WillMessageResPacket willMessageRespPacket = new WillMessageResPacket();</span>
-<span class="fc" id="L240">        willMessageRespPacket.decode(response);</span>
+<span class="fc" id="L242">        WillMessageResPacket willMessageRespPacket = new WillMessageResPacket();</span>
+<span class="fc" id="L243">        willMessageRespPacket.decode(response);</span>
         
-<span class="pc bpc" id="L242" title="1 of 2 branches missed.">        if (willMessageRespPacket.getType() != MqttSnConstants.TYPE_WILLMSGRESP) {</span>
-<span class="nc" id="L243">        	throw new MqttSnClientException(&quot;Was expecting WILLMSGRESP packet but received: &quot; + MqttSnUtility.decodeType(willMessageRespPacket.getType()));</span>
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if (willMessageRespPacket.getType() != MqttSnConstants.TYPE_WILLMSGRESP) {</span>
+<span class="nc" id="L246">        	throw new MqttSnClientException(&quot;Was expecting WILLMSGRESP packet but received: &quot; + MqttSnUtility.decodeType(willMessageRespPacket.getType()));</span>
         }
 
         // Check Connack return code
-<span class="fc" id="L247">        logger.debug(&quot;WILLMSGRESP return code:&quot; + MqttSnUtility.decodeReturnCode(willMessageRespPacket.getReturnCode()));</span>
+<span class="fc" id="L250">        logger.debug(&quot;WILLMSGRESP return code:&quot; + MqttSnUtility.decodeReturnCode(willMessageRespPacket.getReturnCode()));</span>
 
-<span class="pc bpc" id="L249" title="1 of 2 branches missed.">        if (willMessageRespPacket.getReturnCode() &gt; 0) {</span>
-<span class="nc" id="L250">        	throw new MqttSnClientException(&quot;WILLMSGRESP error: &quot; + MqttSnUtility.decodeReturnCode(willMessageRespPacket.getReturnCode()));  </span>
+<span class="pc bpc" id="L252" title="1 of 2 branches missed.">        if (willMessageRespPacket.getReturnCode() &gt; 0) {</span>
+<span class="nc" id="L253">        	throw new MqttSnClientException(&quot;WILLMSGRESP error: &quot; + MqttSnUtility.decodeReturnCode(willMessageRespPacket.getReturnCode()));  </span>
         }
-<span class="fc" id="L252">    }</span>
+<span class="fc" id="L255">    }</span>
     
     public void sendWillTopicUpdate() throws MqttSnClientException {
-<span class="fc" id="L255">        WillTopicUpdateReqPacket willTopicUpdateReqPacket = new WillTopicUpdateReqPacket();</span>
+<span class="fc" id="L258">        WillTopicUpdateReqPacket willTopicUpdateReqPacket = new WillTopicUpdateReqPacket();</span>
         
-<span class="fc" id="L257">        byte flags = 0;</span>
+<span class="fc" id="L260">        byte flags = 0;</span>
 
-<span class="pc bpc" id="L259" title="1 of 2 branches missed.">        if (this.willRetain) {</span>
-<span class="fc" id="L260">        	flags += MqttSnConstants.FLAG_RETAIN;</span>
+<span class="pc bpc" id="L262" title="1 of 2 branches missed.">        if (this.willRetain) {</span>
+<span class="fc" id="L263">        	flags += MqttSnConstants.FLAG_RETAIN;</span>
         }
             
-<span class="fc" id="L263">        flags |= (byte) MqttSnUtility.getQosFlag(willQos);</span>
+<span class="fc" id="L266">        flags |= (byte) MqttSnUtility.getQosFlag(willQos);</span>
         
-<span class="fc" id="L265">        willTopicUpdateReqPacket.setFlags(flags);</span>
-<span class="fc" id="L266">        willTopicUpdateReqPacket.setTopicName(this.willTopic);</span>
+<span class="fc" id="L268">        willTopicUpdateReqPacket.setFlags(flags);</span>
+<span class="fc" id="L269">        willTopicUpdateReqPacket.setTopicName(this.willTopic);</span>
         
-<span class="fc" id="L268">        this.sendPacket(willTopicUpdateReqPacket.encode());</span>
+<span class="fc" id="L271">        this.sendPacket(willTopicUpdateReqPacket.encode());</span>
                 
-<span class="fc" id="L270">        byte[] response = this.receivePacketSync();</span>
+<span class="fc" id="L273">        byte[] response = this.receivePacketSync();</span>
         
-<span class="pc bpc" id="L272" title="1 of 2 branches missed.">        if (response == null) {</span>
-<span class="nc" id="L273">            throw new MqttSnClientException(&quot;Failed to connect to MQTT-SN gateway.&quot;);</span>
+<span class="pc bpc" id="L275" title="1 of 2 branches missed.">        if (response == null) {</span>
+<span class="nc" id="L276">            throw new MqttSnClientException(&quot;Failed to connect to MQTT-SN gateway.&quot;);</span>
         }
-<span class="fc" id="L275">        WillTopicResPacket willTopicResPacket = new WillTopicResPacket();</span>
-<span class="fc" id="L276">        willTopicResPacket.decode(response);</span>
+<span class="fc" id="L278">        WillTopicResPacket willTopicResPacket = new WillTopicResPacket();</span>
+<span class="fc" id="L279">        willTopicResPacket.decode(response);</span>
         
-<span class="pc bpc" id="L278" title="1 of 2 branches missed.">        if (willTopicResPacket.getType() != MqttSnConstants.TYPE_WILLTOPICRESP) {</span>
-<span class="nc" id="L279">        	throw new MqttSnClientException(&quot;Was expecting WILLTOPICRESP packet but received: &quot; + MqttSnUtility.decodeType(willTopicResPacket.getType()));</span>
+<span class="pc bpc" id="L281" title="1 of 2 branches missed.">        if (willTopicResPacket.getType() != MqttSnConstants.TYPE_WILLTOPICRESP) {</span>
+<span class="nc" id="L282">        	throw new MqttSnClientException(&quot;Was expecting WILLTOPICRESP packet but received: &quot; + MqttSnUtility.decodeType(willTopicResPacket.getType()));</span>
         }
 
         // Check Connack return code
-<span class="fc" id="L283">        logger.debug(&quot;WILLTOPICRESP return code:&quot; + willTopicResPacket.getReturnCode());</span>
+<span class="fc" id="L286">        logger.debug(&quot;WILLTOPICRESP return code:&quot; + willTopicResPacket.getReturnCode());</span>
 
-<span class="pc bpc" id="L285" title="1 of 2 branches missed.">        if (willTopicResPacket.getReturnCode() &gt; 0) {</span>
-<span class="nc" id="L286">        	throw new MqttSnClientException(&quot;WILLTOPICRESP error: &quot; + MqttSnUtility.decodeReturnCode(willTopicResPacket.getReturnCode()));  </span>
+<span class="pc bpc" id="L288" title="1 of 2 branches missed.">        if (willTopicResPacket.getReturnCode() &gt; 0) {</span>
+<span class="nc" id="L289">        	throw new MqttSnClientException(&quot;WILLTOPICRESP error: &quot; + MqttSnUtility.decodeReturnCode(willTopicResPacket.getReturnCode()));  </span>
         }
-<span class="fc" id="L288">    }</span>
+<span class="fc" id="L291">    }</span>
     
     public void sendConnect() throws MqttSnClientException {
     	byte[] response;
     	
-<span class="fc" id="L293">    	ConnectPacket connectPacket = new ConnectPacket();</span>
+<span class="fc" id="L296">    	ConnectPacket connectPacket = new ConnectPacket();</span>
     	
-<span class="fc" id="L295">    	byte flags = 0;</span>
-<span class="pc bpc" id="L296" title="1 of 2 branches missed.">    	if (this.cleanSession) {</span>
-<span class="fc" id="L297">    		flags += MqttSnConstants.FLAG_CLEAN;</span>
+<span class="fc" id="L298">    	byte flags = 0;</span>
+<span class="pc bpc" id="L299" title="1 of 2 branches missed.">    	if (this.cleanSession) {</span>
+<span class="fc" id="L300">    		flags += MqttSnConstants.FLAG_CLEAN;</span>
     	}
-<span class="pc bpc" id="L299" title="1 of 4 branches missed.">        if ((this.willTopic != null) &amp;&amp; (this.willMessage != null)) {</span>
-<span class="fc" id="L300">        	flags += MqttSnConstants.FLAG_WILL;	</span>
+<span class="pc bpc" id="L302" title="1 of 4 branches missed.">        if ((this.willTopic != null) &amp;&amp; (this.willMessage != null)) {</span>
+<span class="fc" id="L303">        	flags += MqttSnConstants.FLAG_WILL;	</span>
         }
     	
 	   	 // Create the CONNECT packet
-<span class="fc" id="L304">	   	connectPacket.setFlags((byte) flags);</span>
-<span class="fc" id="L305">	   	connectPacket.setProtocolID(MqttSnConstants.PROTOCOL_ID);</span>
-<span class="fc" id="L306">	   	connectPacket.setDuration(this.keepAlive);</span>
-<span class="fc" id="L307">	   	connectPacket.setClientID(this.clientID);</span>
+<span class="fc" id="L307">	   	connectPacket.setFlags((byte) flags);</span>
+<span class="fc" id="L308">	   	connectPacket.setProtocolID(MqttSnConstants.PROTOCOL_ID);</span>
+<span class="fc" id="L309">	   	connectPacket.setDuration(this.keepAlive);</span>
+<span class="fc" id="L310">	   	connectPacket.setClientID(this.clientID);</span>
 
-<span class="fc" id="L309">        this.sendPacket(connectPacket.encode());</span>
+<span class="fc" id="L312">        this.sendPacket(connectPacket.encode());</span>
         
-<span class="pc bpc" id="L311" title="1 of 4 branches missed.">        if ((this.willTopic != null) &amp;&amp; (this.willMessage != null)) {</span>
-<span class="fc" id="L312">        	logger.debug(&quot;LWT enabled.&quot;);</span>
-<span class="fc" id="L313">            response = this.receivePacketSync();</span>
+<span class="pc bpc" id="L314" title="1 of 4 branches missed.">        if ((this.willTopic != null) &amp;&amp; (this.willMessage != null)) {</span>
+<span class="fc" id="L315">        	logger.debug(&quot;LWT enabled.&quot;);</span>
+<span class="fc" id="L316">            response = this.receivePacketSync();</span>
             
-<span class="pc bpc" id="L315" title="1 of 2 branches missed.">            if (response == null) {</span>
-<span class="nc" id="L316">                throw new MqttSnClientException(&quot;Failed to connect to MQTT-SN gateway.&quot;);</span>
+<span class="pc bpc" id="L318" title="1 of 2 branches missed.">            if (response == null) {</span>
+<span class="nc" id="L319">                throw new MqttSnClientException(&quot;Failed to connect to MQTT-SN gateway.&quot;);</span>
             }
             
-<span class="fc" id="L319">            WillTopicReqPacket willTopicReqPacket = new WillTopicReqPacket();</span>
-<span class="fc" id="L320">            willTopicReqPacket.decode(response);</span>
+<span class="fc" id="L322">            WillTopicReqPacket willTopicReqPacket = new WillTopicReqPacket();</span>
+<span class="fc" id="L323">            willTopicReqPacket.decode(response);</span>
             
-<span class="pc bpc" id="L322" title="1 of 2 branches missed.">            if (willTopicReqPacket.getType() != MqttSnConstants.TYPE_WILLTOPICREQ) {</span>
-<span class="nc" id="L323">            	throw new MqttSnClientException(&quot;Was expecting WILLTOPICREQ packet but received: &quot; + MqttSnUtility.decodeType(willTopicReqPacket.getType()));</span>
+<span class="pc bpc" id="L325" title="1 of 2 branches missed.">            if (willTopicReqPacket.getType() != MqttSnConstants.TYPE_WILLTOPICREQ) {</span>
+<span class="nc" id="L326">            	throw new MqttSnClientException(&quot;Was expecting WILLTOPICREQ packet but received: &quot; + MqttSnUtility.decodeType(willTopicReqPacket.getType()));</span>
             }
 
-<span class="fc" id="L326">            WillTopicPacket willTopicPacket = new WillTopicPacket();</span>
+<span class="fc" id="L329">            WillTopicPacket willTopicPacket = new WillTopicPacket();</span>
             
-<span class="fc" id="L328">            flags = 0;</span>
+<span class="fc" id="L331">            flags = 0;</span>
 
-<span class="pc bpc" id="L330" title="1 of 2 branches missed.">            if (this.willRetain) {</span>
-<span class="fc" id="L331">            	flags += MqttSnConstants.FLAG_RETAIN;</span>
+<span class="pc bpc" id="L333" title="1 of 2 branches missed.">            if (this.willRetain) {</span>
+<span class="fc" id="L334">            	flags += MqttSnConstants.FLAG_RETAIN;</span>
             }
                 
-<span class="fc" id="L334">            flags |= (byte) MqttSnUtility.getQosFlag(willQos);</span>
+<span class="fc" id="L337">            flags |= (byte) MqttSnUtility.getQosFlag(willQos);</span>
 
-<span class="fc" id="L336">        	willTopicPacket.setTopicName(willTopic);</span>
-<span class="fc" id="L337">        	willTopicPacket.setFlags((byte) flags);</span>
+<span class="fc" id="L339">        	willTopicPacket.setTopicName(willTopic);</span>
+<span class="fc" id="L340">        	willTopicPacket.setFlags((byte) flags);</span>
 
         	
-<span class="fc" id="L340">            this.sendPacket(willTopicPacket.encode());</span>
-<span class="fc" id="L341">            response = this.receivePacketSync();</span>
+<span class="fc" id="L343">            this.sendPacket(willTopicPacket.encode());</span>
+<span class="fc" id="L344">            response = this.receivePacketSync();</span>
             
-<span class="pc bpc" id="L343" title="1 of 2 branches missed.">            if (response == null) {</span>
-<span class="nc" id="L344">                throw new MqttSnClientException(&quot;Failed to connect to MQTT-SN gateway.&quot;);</span>
+<span class="pc bpc" id="L346" title="1 of 2 branches missed.">            if (response == null) {</span>
+<span class="nc" id="L347">                throw new MqttSnClientException(&quot;Failed to connect to MQTT-SN gateway.&quot;);</span>
             }
             
-<span class="fc" id="L347">            WillMessageReqPacket willMessageReqPacket = new WillMessageReqPacket();</span>
-<span class="fc" id="L348">            willMessageReqPacket.decode(response);</span>
+<span class="fc" id="L350">            WillMessageReqPacket willMessageReqPacket = new WillMessageReqPacket();</span>
+<span class="fc" id="L351">            willMessageReqPacket.decode(response);</span>
             
-<span class="pc bpc" id="L350" title="1 of 2 branches missed.">            if (willMessageReqPacket.getType() != MqttSnConstants.TYPE_WILLMSGREQ) {</span>
-<span class="nc" id="L351">            	throw new MqttSnClientException(&quot;Was expecting WILLMSGREQ packet but received: &quot; + MqttSnUtility.decodeType(willMessageReqPacket.getType()));</span>
+<span class="pc bpc" id="L353" title="1 of 2 branches missed.">            if (willMessageReqPacket.getType() != MqttSnConstants.TYPE_WILLMSGREQ) {</span>
+<span class="nc" id="L354">            	throw new MqttSnClientException(&quot;Was expecting WILLMSGREQ packet but received: &quot; + MqttSnUtility.decodeType(willMessageReqPacket.getType()));</span>
             }
             
-<span class="fc" id="L354">            WillMessagePacket willMessagePacket = new WillMessagePacket();</span>
-<span class="fc" id="L355">            willMessagePacket.setMessage(willMessage);</span>
+<span class="fc" id="L357">            WillMessagePacket willMessagePacket = new WillMessagePacket();</span>
+<span class="fc" id="L358">            willMessagePacket.setMessage(willMessage);</span>
 
-<span class="fc" id="L357">            this.sendPacket(willMessagePacket.encode());</span>
+<span class="fc" id="L360">            this.sendPacket(willMessagePacket.encode());</span>
             
         }
         
-<span class="fc" id="L361">        response = this.receivePacketSync();</span>
+<span class="fc" id="L364">        response = this.receivePacketSync();</span>
         
-<span class="pc bpc" id="L363" title="1 of 2 branches missed.">        if (response == null) {</span>
-<span class="nc" id="L364">            throw new MqttSnClientException(&quot;Failed to connect to MQTT-SN gateway.&quot;);</span>
+<span class="pc bpc" id="L366" title="1 of 2 branches missed.">        if (response == null) {</span>
+<span class="nc" id="L367">            throw new MqttSnClientException(&quot;Failed to connect to MQTT-SN gateway.&quot;);</span>
         }
-<span class="fc" id="L366">        ConnackPacket connackPacket = new ConnackPacket();</span>
-<span class="fc" id="L367">        connackPacket.decode(response);</span>
+<span class="fc" id="L369">        ConnackPacket connackPacket = new ConnackPacket();</span>
+<span class="fc" id="L370">        connackPacket.decode(response);</span>
         
-<span class="pc bpc" id="L369" title="1 of 2 branches missed.">        if (connackPacket.getType() != MqttSnConstants.TYPE_CONNACK) {</span>
-<span class="nc" id="L370">        	throw new MqttSnClientException(&quot;Was expecting CONNACK packet but received: &quot; + MqttSnUtility.decodeType(connackPacket.getType()));</span>
+<span class="pc bpc" id="L372" title="1 of 2 branches missed.">        if (connackPacket.getType() != MqttSnConstants.TYPE_CONNACK) {</span>
+<span class="nc" id="L373">        	throw new MqttSnClientException(&quot;Was expecting CONNACK packet but received: &quot; + MqttSnUtility.decodeType(connackPacket.getType()));</span>
         }
 
         // Check Connack return code
-<span class="fc" id="L374">        logger.debug(&quot;CONNACK return code:&quot; + MqttSnUtility.decodeReturnCode(connackPacket.getReturnCode()));</span>
+<span class="fc" id="L377">        logger.debug(&quot;CONNACK return code:&quot; + MqttSnUtility.decodeReturnCode(connackPacket.getReturnCode()));</span>
 
-<span class="pc bpc" id="L376" title="1 of 2 branches missed.">        if (connackPacket.getReturnCode() &gt; 0) {</span>
-<span class="nc" id="L377">        	throw new MqttSnClientException(&quot;CONNECT error: &quot; + MqttSnUtility.decodeReturnCode(connackPacket.getReturnCode()));  </span>
+<span class="pc bpc" id="L379" title="1 of 2 branches missed.">        if (connackPacket.getReturnCode() &gt; 0) {</span>
+<span class="nc" id="L380">        	throw new MqttSnClientException(&quot;CONNECT error: &quot; + MqttSnUtility.decodeReturnCode(connackPacket.getReturnCode()));  </span>
         }
-<span class="fc" id="L379">    }</span>
+<span class="fc" id="L382">    }</span>
     
     public void sendDisconnect() throws MqttSnClientException
     {
-<span class="fc" id="L383">    	this.sendDisconnect((short) 0);</span>
-<span class="fc" id="L384">    }</span>
+<span class="fc" id="L386">    	this.sendDisconnect((short) 0);</span>
+<span class="fc" id="L387">    }</span>
     
     public void sendDisconnect(short duration) throws MqttSnClientException
     {
-<span class="fc" id="L388">        DisconnectReqPacket disconnectReqPacket = new DisconnectReqPacket();</span>
-<span class="fc" id="L389">       	disconnectReqPacket.setDuration(duration);</span>
+<span class="fc" id="L391">        DisconnectReqPacket disconnectReqPacket = new DisconnectReqPacket();</span>
+<span class="fc" id="L392">       	disconnectReqPacket.setDuration(duration);</span>
 
-<span class="fc" id="L391">        this.sendPacket(disconnectReqPacket.encode());</span>
+<span class="fc" id="L394">        this.sendPacket(disconnectReqPacket.encode());</span>
         
-<span class="fc" id="L393">        byte[] response = this.waitFor(MqttSnConstants.TYPE_DISCONNECT);</span>
+<span class="fc" id="L396">        byte[] response = this.waitFor(MqttSnConstants.TYPE_DISCONNECT);</span>
         // byte[] response = this.receivePacketSync();
-<span class="pc bpc" id="L395" title="1 of 2 branches missed.">        if (response == null) {</span>
-<span class="nc" id="L396">            throw new MqttSnClientException(&quot;Failed to disconnect from MQTT-SN gateway.&quot;);</span>
+<span class="pc bpc" id="L398" title="1 of 2 branches missed.">        if (response == null) {</span>
+<span class="nc" id="L399">            throw new MqttSnClientException(&quot;Failed to disconnect from MQTT-SN gateway.&quot;);</span>
         }
         
-<span class="fc" id="L399">        DisconnectResPacket disconnectResPacket = new DisconnectResPacket();</span>
-<span class="fc" id="L400">        disconnectResPacket.decode(response);</span>
+<span class="fc" id="L402">        DisconnectResPacket disconnectResPacket = new DisconnectResPacket();</span>
+<span class="fc" id="L403">        disconnectResPacket.decode(response);</span>
         
-<span class="pc bpc" id="L402" title="1 of 2 branches missed.">        if (disconnectResPacket.getType() != MqttSnConstants.TYPE_DISCONNECT) {</span>
-<span class="nc" id="L403">        	throw new MqttSnClientException(&quot;Was expecting DISCONNECT packet but received: &quot; + MqttSnUtility.decodeType(disconnectResPacket.getType()));</span>
+<span class="pc bpc" id="L405" title="1 of 2 branches missed.">        if (disconnectResPacket.getType() != MqttSnConstants.TYPE_DISCONNECT) {</span>
+<span class="nc" id="L406">        	throw new MqttSnClientException(&quot;Was expecting DISCONNECT packet but received: &quot; + MqttSnUtility.decodeType(disconnectResPacket.getType()));</span>
         }
 
         // Check Disconnect return duration
-<span class="pc bpc" id="L407" title="1 of 2 branches missed.">        if (disconnectResPacket.getLength() == 4) {</span>
-<span class="nc" id="L408">            logger.warn(&quot;DISCONNECT warning. Gateway returned duration in disconnect packet.&quot;);</span>
+<span class="pc bpc" id="L410" title="1 of 2 branches missed.">        if (disconnectResPacket.getLength() == 4) {</span>
+<span class="nc" id="L411">            logger.warn(&quot;DISCONNECT warning. Gateway returned duration in disconnect packet.&quot;);</span>
         }
-<span class="fc" id="L410">    }</span>
+<span class="fc" id="L413">    }</span>
     
     public void sendSearchGateway(byte radius) throws MqttSnClientException
     {
-<span class="fc" id="L414">    	SearchGatewayPacket searchGatewayPacket = new SearchGatewayPacket();</span>
-<span class="fc" id="L415">    	searchGatewayPacket.setRadius(radius);</span>
+<span class="fc" id="L417">    	SearchGatewayPacket searchGatewayPacket = new SearchGatewayPacket();</span>
+<span class="fc" id="L418">    	searchGatewayPacket.setRadius(radius);</span>
     	
-<span class="fc" id="L417">    	this.sendPacket(searchGatewayPacket.encode());</span>
+<span class="fc" id="L420">    	this.sendPacket(searchGatewayPacket.encode());</span>
     	
         // byte[] response = this.receivePacketSync();
-<span class="fc" id="L420">        byte[] response = this.waitFor(MqttSnConstants.TYPE_GWINFO);</span>
-<span class="pc bpc" id="L421" title="1 of 2 branches missed.">        if (response == null) {</span>
-<span class="nc" id="L422">            throw new MqttSnClientException(&quot;Failed to disconnect from MQTT-SN gateway.&quot;);</span>
+<span class="fc" id="L423">        byte[] response = this.waitFor(MqttSnConstants.TYPE_GWINFO);</span>
+<span class="pc bpc" id="L424" title="1 of 2 branches missed.">        if (response == null) {</span>
+<span class="nc" id="L425">            throw new MqttSnClientException(&quot;Failed to disconnect from MQTT-SN gateway.&quot;);</span>
         }
     	
-<span class="fc" id="L425">    	GatewayInfoPacket gatewayInfoPacket = new GatewayInfoPacket();</span>
-<span class="fc" id="L426">    	gatewayInfoPacket.decode(response);</span>
+<span class="fc" id="L428">    	GatewayInfoPacket gatewayInfoPacket = new GatewayInfoPacket();</span>
+<span class="fc" id="L429">    	gatewayInfoPacket.decode(response);</span>
     	
-<span class="pc bpc" id="L428" title="1 of 2 branches missed.">        if (gatewayInfoPacket.getType() != MqttSnConstants.TYPE_GWINFO) {</span>
-<span class="nc" id="L429">        	throw new MqttSnClientException(&quot;Was expecting GWINFO packet but received: &quot; + MqttSnUtility.decodeType(gatewayInfoPacket.getType()));</span>
+<span class="pc bpc" id="L431" title="1 of 2 branches missed.">        if (gatewayInfoPacket.getType() != MqttSnConstants.TYPE_GWINFO) {</span>
+<span class="nc" id="L432">        	throw new MqttSnClientException(&quot;Was expecting GWINFO packet but received: &quot; + MqttSnUtility.decodeType(gatewayInfoPacket.getType()));</span>
         }
-<span class="fc" id="L431">        logger.info(&quot;Gateway ID: &quot; + gatewayInfoPacket.getGatewayID());</span>
-<span class="fc" id="L432">        logger.info(&quot;Gateway Address: &quot; + gatewayInfoPacket.getGatewayAddress());</span>
-<span class="fc" id="L433">    }</span>
+<span class="fc" id="L434">        logger.info(&quot;Gateway ID: &quot; + gatewayInfoPacket.getGatewayID());</span>
+<span class="fc" id="L435">        logger.info(&quot;Gateway Address: &quot; + gatewayInfoPacket.getGatewayAddress());</span>
+<span class="fc" id="L436">    }</span>
       
     public short sendPublish(String topic_name, byte[] data, int qos, boolean retain) throws MqttSnClientException {
     	
-<span class="fc" id="L437">    	byte topic_type = MqttSnConstants.TOPIC_TYPE_NORMAL;</span>
+<span class="fc" id="L440">    	byte topic_type = MqttSnConstants.TOPIC_TYPE_NORMAL;</span>
 
-<span class="fc" id="L439">    	short topic_id = this.sendRegister(topic_name);</span>
+<span class="fc" id="L442">    	short topic_id = this.sendRegister(topic_name);</span>
 
-<span class="fc" id="L441">        this.sendPublish(topic_id, topic_type, data, qos, retain);</span>
+<span class="fc" id="L444">        this.sendPublish(topic_id, topic_type, data, qos, retain);</span>
         
-<span class="fc" id="L443">        return topic_id;</span>
+<span class="fc" id="L446">        return topic_id;</span>
     }
       
     public short sendRegister(String topic) throws MqttSnClientException {
     
-<span class="fc" id="L448">        int topic_name_len = topic.length();</span>
-<span class="fc" id="L449">        RegisterPacket packet = new RegisterPacket();</span>
+<span class="fc" id="L451">        int topic_name_len = topic.length();</span>
+<span class="fc" id="L452">        RegisterPacket packet = new RegisterPacket();</span>
 
-<span class="fc bfc" id="L451" title="All 2 branches covered.">        if (topic_name_len &gt; MqttSnConstants.MAX_TOPIC_LENGTH) {</span>
-<span class="fc" id="L452">            throw new MqttSnClientException(&quot;Topic name is too long&quot;);</span>
+<span class="fc bfc" id="L454" title="All 2 branches covered.">        if (topic_name_len &gt; MqttSnConstants.MAX_TOPIC_LENGTH) {</span>
+<span class="fc" id="L455">            throw new MqttSnClientException(&quot;Topic name is too long&quot;);</span>
         }
 
-<span class="fc" id="L455">        packet.setTopicID((byte) 0);</span>
-<span class="fc" id="L456">        packet.setMessageID((byte) this.nextMessageID++);</span>
-<span class="fc" id="L457">        packet.setTopicName(topic);</span>
-<span class="fc" id="L458">        this.sendPacket(packet.encode());</span>
+<span class="fc" id="L458">        packet.setTopicID((byte) 0);</span>
+<span class="fc" id="L459">        packet.setMessageID((byte) this.nextMessageID++);</span>
+<span class="fc" id="L460">        packet.setTopicName(topic);</span>
+<span class="fc" id="L461">        this.sendPacket(packet.encode());</span>
         
-<span class="fc" id="L460">        short topic_id = this.receiveRegack();</span>
+<span class="fc" id="L463">        short topic_id = this.receiveRegack();</span>
         
-<span class="fc" id="L462">        return topic_id;</span>
+<span class="fc" id="L465">        return topic_id;</span>
     }
     
     public void sendPublishShort(short topic_id, byte[] data, int qos, boolean retain) throws MqttSnClientException {
-<span class="nc" id="L466">    	this.sendPublish(topic_id, MqttSnConstants.TOPIC_TYPE_SHORT, data, qos, retain);</span>
-<span class="nc" id="L467">    }</span>
+<span class="nc" id="L469">    	this.sendPublish(topic_id, MqttSnConstants.TOPIC_TYPE_SHORT, data, qos, retain);</span>
+<span class="nc" id="L470">    }</span>
     
     public void sendPublishPreDefined(short topic_id, byte[] data, int qos, boolean retain) throws MqttSnClientException {
-<span class="nc" id="L470">    	this.sendPublish(topic_id, MqttSnConstants.TOPIC_TYPE_PREDEFINED, data, qos, retain);</span>
-<span class="nc" id="L471">    }</span>
+<span class="nc" id="L473">    	this.sendPublish(topic_id, MqttSnConstants.TOPIC_TYPE_PREDEFINED, data, qos, retain);</span>
+<span class="nc" id="L474">    }</span>
     
     public void sendPublish(byte[] topic_name, byte[] data, int qos, boolean retain) throws MqttSnClientException {
-<span class="pc bpc" id="L474" title="1 of 2 branches missed.">    	if (topic_name.length != 2) {</span>
-<span class="nc" id="L475">    		throw new MqttSnClientException(&quot;Paramater 'topic_name' must to be 2 bytes!&quot;);</span>
+<span class="pc bpc" id="L477" title="1 of 2 branches missed.">    	if (topic_name.length != 2) {</span>
+<span class="nc" id="L478">    		throw new MqttSnClientException(&quot;Paramater 'topic_name' must to be 2 bytes!&quot;);</span>
     	}
-<span class="fc" id="L477">    	short topic_id = (short) ((topic_name[0] &lt;&lt; 8) + topic_name[1]);</span>
-<span class="fc" id="L478">    	this.sendPublish(topic_id, MqttSnConstants.TOPIC_TYPE_SHORT, data, qos, retain);</span>
-<span class="fc" id="L479">    }</span>
+<span class="fc" id="L480">    	short topic_id = (short) ((topic_name[0] &lt;&lt; 8) + topic_name[1]);</span>
+<span class="fc" id="L481">    	this.sendPublish(topic_id, MqttSnConstants.TOPIC_TYPE_SHORT, data, qos, retain);</span>
+<span class="fc" id="L482">    }</span>
     
     public synchronized void sendPublish(short topic_id, byte topic_type, byte[] data, int qos, boolean retain) throws MqttSnClientException {
     	
-<span class="fc" id="L483">    	byte flags = 0;</span>
+<span class="fc" id="L486">    	byte flags = 0;</span>
     	
-<span class="pc bpc" id="L485" title="1 of 2 branches missed.">        if (retain) {</span>
-<span class="nc" id="L486">        	flags += MqttSnConstants.FLAG_RETAIN;</span>
+<span class="pc bpc" id="L488" title="1 of 2 branches missed.">        if (retain) {</span>
+<span class="nc" id="L489">        	flags += MqttSnConstants.FLAG_RETAIN;</span>
         }
             
-<span class="fc" id="L489">        flags += (byte) MqttSnUtility.getQosFlag(qos);</span>
-<span class="fc" id="L490">        flags += (topic_type &amp; 0x3);</span>
+<span class="fc" id="L492">        flags += (byte) MqttSnUtility.getQosFlag(qos);</span>
+<span class="fc" id="L493">        flags += (topic_type &amp; 0x3);</span>
         
-<span class="fc" id="L492">    	PublishPacket publishPacket = new PublishPacket();</span>
-<span class="fc" id="L493">        publishPacket.setFlags((byte) flags);        </span>
-<span class="fc" id="L494">        publishPacket.setTopicID(topic_id);</span>
-<span class="fc bfc" id="L495" title="All 2 branches covered.">        if (qos &gt; 0) {</span>
-<span class="fc" id="L496">        	publishPacket.setMessageID((short) this.nextMessageID++);</span>
+<span class="fc" id="L495">    	PublishPacket publishPacket = new PublishPacket();</span>
+<span class="fc" id="L496">        publishPacket.setFlags((byte) flags);        </span>
+<span class="fc" id="L497">        publishPacket.setTopicID(topic_id);</span>
+<span class="fc bfc" id="L498" title="All 2 branches covered.">        if (qos &gt; 0) {</span>
+<span class="fc" id="L499">        	publishPacket.setMessageID((short) this.nextMessageID++);</span>
         } else {
-<span class="fc" id="L498">        	publishPacket.setMessageID((short) 0x0000);</span>
+<span class="fc" id="L501">        	publishPacket.setMessageID((short) 0x0000);</span>
         }
-<span class="fc" id="L500">        publishPacket.setData(data);</span>
+<span class="fc" id="L503">        publishPacket.setData(data);</span>
 
-<span class="fc" id="L502">        this.sendPacket(publishPacket.encode());</span>
+<span class="fc" id="L505">        this.sendPacket(publishPacket.encode());</span>
 
-<span class="fc bfc" id="L504" title="All 2 branches covered.">        if (qos &gt; 0) {</span>
-<span class="fc" id="L505">            this.receivePuback();</span>
-        }
-<span class="fc" id="L507">    }</span>
+<span class="fc bfc" id="L507" title="All 2 branches covered.">        if (qos == MqttSnConstants.QOS_1) {</span>
+<span class="fc" id="L508">            this.receivePuback();</span>
+<span class="fc bfc" id="L509" title="All 2 branches covered.">        } else if (qos == MqttSnConstants.QOS_2) {</span>
+<span class="fc" id="L510">			short msgId = this.receivePubRec();</span>
+			
+<span class="fc" id="L512">			this.sendPubRel(msgId);</span>
+			
+<span class="fc" id="L514">			this.receivePubComp();</span>
+		}
+<span class="fc" id="L516">    }</span>
     
     public void polling() throws MqttSnClientException {
-<span class="fc" id="L510">    	byte[] buffer = this.waitFor(MqttSnConstants.TYPE_PUBLISH);</span>
-<span class="fc bfc" id="L511" title="All 2 branches covered.">        if (buffer != null) {</span>
-<span class="fc" id="L512">        	PublishPacket publishPacket = new PublishPacket();</span>
-<span class="fc" id="L513">        	publishPacket.decode(buffer);</span>
+<span class="fc" id="L519">    	byte[] buffer = this.waitFor(MqttSnConstants.TYPE_PUBLISH);</span>
+<span class="fc bfc" id="L520" title="All 2 branches covered.">        if (buffer != null) {</span>
+<span class="fc" id="L521">        	PublishPacket publishPacket = new PublishPacket();</span>
+<span class="fc" id="L522">        	publishPacket.decode(buffer);</span>
         	
-<span class="pc bpc" id="L515" title="1 of 2 branches missed.">            if (publishPacket.getType() != MqttSnConstants.TYPE_PUBLISH) {</span>
-<span class="nc" id="L516">            	throw new MqttSnClientException(&quot;Was expecting PUBLISH packet but received: &quot; + MqttSnUtility.decodeType(publishPacket.getType()));</span>
+<span class="pc bpc" id="L524" title="1 of 2 branches missed.">            if (publishPacket.getType() != MqttSnConstants.TYPE_PUBLISH) {</span>
+<span class="nc" id="L525">            	throw new MqttSnClientException(&quot;Was expecting PUBLISH packet but received: &quot; + MqttSnUtility.decodeType(publishPacket.getType()));</span>
             }
         	
-<span class="fc" id="L519">            byte packet_qos = (byte) (publishPacket.getFlags() &amp; MqttSnConstants.FLAG_QOS_MASK);</span>
-<span class="fc bfc" id="L520" title="All 2 branches covered.">            if (packet_qos == MqttSnConstants.FLAG_QOS_1) {</span>
-<span class="fc" id="L521">            	this.sendPuback(publishPacket, MqttSnConstants.ACCEPTED);</span>
-            }
+<span class="fc" id="L528">            byte packet_qos = (byte) (publishPacket.getFlags() &amp; MqttSnConstants.FLAG_QOS_MASK);</span>
+<span class="fc bfc" id="L529" title="All 2 branches covered.">            if (packet_qos == MqttSnConstants.FLAG_QOS_1) {</span>
+<span class="fc" id="L530">            	this.sendPuback(publishPacket.getTopicID(), publishPacket.getMessageID(), MqttSnConstants.ACCEPTED);</span>
+<span class="fc bfc" id="L531" title="All 2 branches covered.">            } else if (packet_qos == MqttSnConstants.FLAG_QOS_2) {</span>
+<span class="fc" id="L532">			    this.sendPubRec(publishPacket.getMessageID());				    </span>
+<span class="fc" id="L533">			    this.receivePubRel();</span>
+<span class="fc" id="L534">			    this.sendPubComp(publishPacket.getMessageID());</span>
+			}
             
-<span class="fc" id="L524">        	short topic_id = publishPacket.getTopicID();</span>
-<span class="fc" id="L525">        	String topic_name = this.topicMap.get(publishPacket.getTopicID());</span>
-<span class="fc" id="L526">        	logger.debug(&quot;topic ID is &quot; + topic_id);</span>
-<span class="fc" id="L527">        	logger.debug(&quot;topic name is &quot; + topic_name);</span>
+<span class="fc" id="L537">        	short topic_id = publishPacket.getTopicID();</span>
+<span class="fc" id="L538">        	String topic_name = this.topicMap.get(publishPacket.getTopicID());</span>
+<span class="fc" id="L539">        	logger.debug(&quot;topic ID is &quot; + topic_id);</span>
+<span class="fc" id="L540">        	logger.debug(&quot;topic name is &quot; + topic_name);</span>
         	
-<span class="fc" id="L529">        	MqttSnListener mqttSnCallback = null;</span>
-<span class="fc bfc" id="L530" title="All 2 branches covered.">        	if (topic_name != null) {</span>
-<span class="fc" id="L531">        		mqttSnCallback = this.listOfMqttSnCallback.get(topic_name);</span>
+<span class="fc" id="L542">        	MqttSnListener mqttSnCallback = null;</span>
+<span class="fc bfc" id="L543" title="All 2 branches covered.">        	if (topic_name != null) {</span>
+<span class="fc" id="L544">        		mqttSnCallback = this.listOfMqttSnCallback.get(topic_name);</span>
         	} else {
-<span class="fc" id="L533">        		mqttSnCallback = this.listOfMqttSnCallback.get(Short.toString(topic_id));</span>
+<span class="fc" id="L546">        		mqttSnCallback = this.listOfMqttSnCallback.get(Short.toString(topic_id));</span>
         	}
-<span class="fc bfc" id="L535" title="All 2 branches covered.">        	if (mqttSnCallback == null) {</span>
-<span class="fc" id="L536">        		logger.warn(&quot;Listener for topic name not found. Search by Topic ID&quot;);</span>
-<span class="fc bfc" id="L537" title="All 2 branches covered.">                for (Map.Entry&lt;String, MqttSnListener&gt; entry : this.listOfMqttSnCallback.entrySet()) {</span>
-<span class="fc" id="L538">                    String filter = entry.getKey();</span>
-<span class="fc" id="L539">                    MqttSnListener callback = entry.getValue();</span>
-<span class="fc bfc" id="L540" title="All 2 branches covered.">                    if (isMatched(topic_name, filter)) {</span>
-<span class="fc" id="L541">                    	logger.debug(&quot;Found listener for topicID=&quot; + topic_id + &quot;,topic name=&quot; + topic_name + &quot;, topic filter=&quot; + filter);</span>
-<span class="fc" id="L542">                    	callback.messageArrived(topic_id, topic_name, publishPacket.getData());</span>
+<span class="fc bfc" id="L548" title="All 2 branches covered.">        	if (mqttSnCallback == null) {</span>
+<span class="fc" id="L549">        		logger.warn(&quot;Listener for topic name not found. Search by Topic ID&quot;);</span>
+<span class="fc bfc" id="L550" title="All 2 branches covered.">                for (Map.Entry&lt;String, MqttSnListener&gt; entry : this.listOfMqttSnCallback.entrySet()) {</span>
+<span class="fc" id="L551">                    String filter = entry.getKey();</span>
+<span class="fc" id="L552">                    MqttSnListener callback = entry.getValue();</span>
+<span class="fc bfc" id="L553" title="All 2 branches covered.">                    if (isMatched(topic_name, filter)) {</span>
+<span class="fc" id="L554">                    	logger.debug(&quot;Found listener for topicID=&quot; + topic_id + &quot;,topic name=&quot; + topic_name + &quot;, topic filter=&quot; + filter);</span>
+<span class="fc" id="L555">                    	callback.messageArrived(topic_id, topic_name, publishPacket.getData());</span>
                     }
-<span class="fc" id="L544">                }</span>
+<span class="fc" id="L557">                }</span>
             } else {
-<span class="fc" id="L546">            	mqttSnCallback.messageArrived(topic_id, topic_name, publishPacket.getData());</span>
+<span class="fc" id="L559">            	mqttSnCallback.messageArrived(topic_id, topic_name, publishPacket.getData());</span>
             }
         } 
-<span class="fc" id="L549">    }</span>
+<span class="fc" id="L562">    }</span>
 
 	private short receivePuback() throws MqttSnClientException {
-<span class="fc" id="L552">        byte[] buffer = this.waitFor(MqttSnConstants.TYPE_PUBACK);</span>
+<span class="fc" id="L565">        byte[] buffer = this.waitFor(MqttSnConstants.TYPE_PUBACK);</span>
         // byte[] buffer = this.receivePacketSync();
         short received_message_id, received_topic_id;
 
-<span class="pc bpc" id="L556" title="1 of 2 branches missed.">        if (buffer == null) {</span>
-<span class="nc" id="L557">            throw new MqttSnClientException (&quot;Failed to subscribe to topic.&quot;);</span>
+<span class="pc bpc" id="L569" title="1 of 2 branches missed.">        if (buffer == null) {</span>
+<span class="nc" id="L570">            throw new MqttSnClientException (&quot;Failed to subscribe to topic.&quot;);</span>
         }
-<span class="fc" id="L559">        PubAckPacket pubackPacket = new PubAckPacket();</span>
-<span class="fc" id="L560">        pubackPacket.decode(buffer);</span>
+<span class="fc" id="L572">        PubAckPacket pubackPacket = new PubAckPacket();</span>
+<span class="fc" id="L573">        pubackPacket.decode(buffer);</span>
         
-<span class="pc bpc" id="L562" title="1 of 2 branches missed.">        if (pubackPacket.getType() != MqttSnConstants.TYPE_PUBACK) {</span>
-<span class="nc" id="L563">        	throw new MqttSnClientException(&quot;Was expecting PUBACK packet but received: &quot; + MqttSnUtility.decodeType(pubackPacket.getType()));</span>
+<span class="pc bpc" id="L575" title="1 of 2 branches missed.">        if (pubackPacket.getType() != MqttSnConstants.TYPE_PUBACK) {</span>
+<span class="nc" id="L576">        	throw new MqttSnClientException(&quot;Was expecting PUBACK packet but received: &quot; + MqttSnUtility.decodeType(pubackPacket.getType()));</span>
         }
         
         // Check Suback return code
-<span class="fc" id="L567">        logger.debug(&quot;PUBACK return code: &quot; + pubackPacket.getReturnCode());</span>
+<span class="fc" id="L580">        logger.debug(&quot;PUBACK return code: &quot; + pubackPacket.getReturnCode());</span>
 
-<span class="pc bpc" id="L569" title="1 of 2 branches missed.">        if (pubackPacket.getReturnCode() &gt; 0) {</span>
-<span class="nc" id="L570">        	throw new MqttSnClientException(&quot;PUBLISH error: &quot; + MqttSnUtility.decodeReturnCode(pubackPacket.getReturnCode()));       </span>
+<span class="pc bpc" id="L582" title="1 of 2 branches missed.">        if (pubackPacket.getReturnCode() &gt; 0) {</span>
+<span class="nc" id="L583">        	throw new MqttSnClientException(&quot;PUBLISH error: &quot; + MqttSnUtility.decodeReturnCode(pubackPacket.getReturnCode()));       </span>
         }
 
         // Check that the Message ID matches
-<span class="fc" id="L574">        received_message_id = pubackPacket.getMessageID();</span>
-<span class="pc bpc" id="L575" title="1 of 2 branches missed.">        if (received_message_id != this.nextMessageID-1) {</span>
-<span class="nc" id="L576">            logger.warn(&quot;Message id in PUBACK does not equal message id sent&quot;);</span>
-<span class="nc" id="L577">            logger.debug(&quot;Expecting: &quot; + (this.nextMessageID-1));</span>
-<span class="nc" id="L578">            logger.debug(&quot;Actual: &quot; + received_message_id);</span>
+<span class="fc" id="L587">        received_message_id = pubackPacket.getMessageID();</span>
+<span class="pc bpc" id="L588" title="1 of 2 branches missed.">        if (received_message_id != this.nextMessageID-1) {</span>
+<span class="nc" id="L589">            logger.warn(&quot;Message id in PUBACK does not equal message id sent&quot;);</span>
+<span class="nc" id="L590">            logger.debug(&quot;Expecting: &quot; + (this.nextMessageID-1));</span>
+<span class="nc" id="L591">            logger.debug(&quot;Actual: &quot; + received_message_id);</span>
         }
 
         // Return the topic ID returned by the gateway
-<span class="fc" id="L582">        received_topic_id = pubackPacket.getTopicID();</span>
-<span class="fc" id="L583">        logger.debug(&quot;PUBACK topic id: &quot; + received_topic_id);</span>
-<span class="fc" id="L584">        return received_topic_id;</span>
+<span class="fc" id="L595">        received_topic_id = pubackPacket.getTopicID();</span>
+<span class="fc" id="L596">        logger.debug(&quot;PUBACK topic id: &quot; + received_topic_id);</span>
+<span class="fc" id="L597">        return received_topic_id;</span>
+    }
+    
+    private short receivePubRec() throws MqttSnClientException {
+<span class="fc" id="L601">        byte[] buffer = this.waitFor(MqttSnConstants.TYPE_PUBREC);</span>
+        short received_message_id, received_topic_id;
+
+<span class="pc bpc" id="L604" title="1 of 2 branches missed.">        if (buffer == null) {</span>
+<span class="nc" id="L605">            throw new MqttSnClientException (&quot;Failed to subscribe to topic.&quot;);</span>
+        }
+<span class="fc" id="L607">        PubRecPacket pubrecPacket = new PubRecPacket();</span>
+<span class="fc" id="L608">        pubrecPacket.decode(buffer);</span>
+        
+<span class="pc bpc" id="L610" title="1 of 2 branches missed.">        if (pubrecPacket.getType() != MqttSnConstants.TYPE_PUBREC) {</span>
+<span class="nc" id="L611">        	throw new MqttSnClientException(&quot;Was expecting PUBREC packet but received: &quot; + MqttSnUtility.decodeType(pubrecPacket.getType()));</span>
+        }
+        
+        // Check that the Message ID matches
+<span class="fc" id="L615">        received_message_id = pubrecPacket.getMessageID();</span>
+<span class="pc bpc" id="L616" title="1 of 2 branches missed.">        if (received_message_id != this.nextMessageID-1) {</span>
+<span class="nc" id="L617">            logger.warn(&quot;Message id in PUBREC does not equal message id sent! Expecting: &quot; + (this.nextMessageID-1) + &quot;, Actual: &quot; + received_message_id);</span>
+        }
+<span class="fc" id="L619">        return received_message_id;</span>
+    }
+    
+    private short receivePubComp() throws MqttSnClientException {
+<span class="fc" id="L623">        byte[] buffer = this.waitFor(MqttSnConstants.TYPE_PUBCOMP);</span>
+        short received_message_id, received_topic_id;
+
+<span class="pc bpc" id="L626" title="1 of 2 branches missed.">        if (buffer == null) {</span>
+<span class="nc" id="L627">            throw new MqttSnClientException (&quot;Failed to subscribe to topic.&quot;);</span>
+        }
+<span class="fc" id="L629">        PubCompPacket pubcompPacket = new PubCompPacket();</span>
+<span class="fc" id="L630">        pubcompPacket.decode(buffer);</span>
+        
+<span class="pc bpc" id="L632" title="1 of 2 branches missed.">        if (pubcompPacket.getType() != MqttSnConstants.TYPE_PUBCOMP) {</span>
+<span class="nc" id="L633">        	throw new MqttSnClientException(&quot;Was expecting PUBCOMP packet but received: &quot; + MqttSnUtility.decodeType(pubcompPacket.getType()));</span>
+        }
+        
+        // Check that the Message ID matches
+<span class="fc" id="L637">        received_message_id = pubcompPacket.getMessageID();</span>
+<span class="pc bpc" id="L638" title="1 of 2 branches missed.">        if (received_message_id != this.nextMessageID-1) {</span>
+<span class="nc" id="L639">            logger.warn(&quot;Message id in PUBCOMP does not equal message id sent! Expecting: &quot; + (this.nextMessageID-1) + &quot;, Actual: &quot; + received_message_id);</span>
+        }
+<span class="fc" id="L641">        return received_message_id;</span>
     }
     
     private short receiveSuback() throws MqttSnClientException {
     	short received_message_id, received_topic_id;
     	
-<span class="fc" id="L590">    	byte[] buffer = this.waitFor(MqttSnConstants.TYPE_SUBACK);</span>
-    	
-    	// byte[] buffer = this.receivePacketSync();
-        
-<span class="pc bpc" id="L594" title="1 of 2 branches missed.">        if (buffer == null) {</span>
-<span class="nc" id="L595">            throw new MqttSnClientException (&quot;Failed to subscribe to topic.&quot;);</span>
+<span class="fc" id="L647">    	byte[] buffer = this.waitFor(MqttSnConstants.TYPE_SUBACK);</span>
+    	        
+<span class="pc bpc" id="L649" title="1 of 2 branches missed.">        if (buffer == null) {</span>
+<span class="nc" id="L650">            throw new MqttSnClientException (&quot;Failed to subscribe to topic.&quot;);</span>
         }
-<span class="fc" id="L597">        SubAckPacket packet = new SubAckPacket();</span>
-<span class="fc" id="L598">        packet.decode(buffer);</span>
+<span class="fc" id="L652">        SubAckPacket packet = new SubAckPacket();</span>
+<span class="fc" id="L653">        packet.decode(buffer);</span>
         
-<span class="pc bpc" id="L600" title="1 of 2 branches missed.">        if (packet.getType() != MqttSnConstants.TYPE_SUBACK) {</span>
-<span class="nc" id="L601">        	throw new MqttSnClientException(&quot;Was expecting SUBACK packet but received: &quot; + MqttSnUtility.decodeType(packet.getType()));</span>
+<span class="pc bpc" id="L655" title="1 of 2 branches missed.">        if (packet.getType() != MqttSnConstants.TYPE_SUBACK) {</span>
+<span class="nc" id="L656">        	throw new MqttSnClientException(&quot;Was expecting SUBACK packet but received: &quot; + MqttSnUtility.decodeType(packet.getType()));</span>
         }
         
         // Check Suback return code
-<span class="fc" id="L605">        logger.debug(&quot;SUBACK return code: &quot; + packet.getReturnCode());</span>
+<span class="fc" id="L660">        logger.debug(&quot;SUBACK return code: &quot; + packet.getReturnCode());</span>
 
-<span class="pc bpc" id="L607" title="1 of 2 branches missed.">        if (packet.getReturnCode() &gt; 0) {</span>
-<span class="nc" id="L608">        	throw new MqttSnClientException(&quot;SUBSCRIBE error: &quot; + MqttSnUtility.decodeReturnCode(packet.getReturnCode()));</span>
+<span class="fc bfc" id="L662" title="All 2 branches covered.">        if (packet.getReturnCode() &gt; 0) {</span>
+<span class="fc" id="L663">        	throw new MqttSnClientException(&quot;SUBSCRIBE error: &quot; + MqttSnUtility.decodeReturnCode(packet.getReturnCode()));</span>
         }
 
         // Check that the Message ID matches
-<span class="fc" id="L612">        received_message_id = packet.getMessageID();</span>
-<span class="pc bpc" id="L613" title="1 of 2 branches missed.">        if (received_message_id != this.nextMessageID-1) {</span>
-<span class="nc" id="L614">            logger.warn(&quot;Message id in SUBACK does not equal message id sent&quot;);</span>
-<span class="nc" id="L615">            logger.debug(&quot;Expecting: &quot; + (this.nextMessageID-1));</span>
-<span class="nc" id="L616">            logger.debug(&quot;Actual: &quot; + received_message_id);</span>
+<span class="fc" id="L667">        received_message_id = packet.getMessageID();</span>
+<span class="pc bpc" id="L668" title="1 of 2 branches missed.">        if (received_message_id != this.nextMessageID-1) {</span>
+<span class="nc" id="L669">            logger.warn(&quot;Message id in SUBACK does not equal message id sent&quot;);</span>
+<span class="nc" id="L670">            logger.debug(&quot;Expecting: &quot; + (this.nextMessageID-1));</span>
+<span class="nc" id="L671">            logger.debug(&quot;Actual: &quot; + received_message_id);</span>
         }
 
         // Return the topic ID returned by the gateway
-<span class="fc" id="L620">        received_topic_id = packet.getTopicID();</span>
-<span class="fc" id="L621">        logger.debug(&quot;SUBACK topic id: &quot; + received_topic_id);</span>
-<span class="fc" id="L622">        return received_topic_id;</span>
+<span class="fc" id="L675">        received_topic_id = packet.getTopicID();</span>
+<span class="fc" id="L676">        logger.debug(&quot;SUBACK topic id: &quot; + received_topic_id);</span>
+<span class="fc" id="L677">        return received_topic_id;</span>
     }
     
     private void receiveUnsuback() throws MqttSnClientException {
     	short received_message_id;
-<span class="fc" id="L627">    	byte[] buffer = this.waitFor(MqttSnConstants.TYPE_UNSUBACK);</span>
+<span class="fc" id="L682">    	byte[] buffer = this.waitFor(MqttSnConstants.TYPE_UNSUBACK);</span>
         
-<span class="pc bpc" id="L629" title="1 of 2 branches missed.">        if (buffer == null) {</span>
-<span class="nc" id="L630">            throw new MqttSnClientException (&quot;Failed to subscribe to topic.&quot;);</span>
+<span class="pc bpc" id="L684" title="1 of 2 branches missed.">        if (buffer == null) {</span>
+<span class="nc" id="L685">            throw new MqttSnClientException (&quot;Failed to subscribe to topic.&quot;);</span>
         }
-<span class="fc" id="L632">        UnsubackPacket unsubackPacket = new UnsubackPacket();</span>
-<span class="fc" id="L633">        unsubackPacket.decode(buffer);</span>
+<span class="fc" id="L687">        UnsubackPacket unsubackPacket = new UnsubackPacket();</span>
+<span class="fc" id="L688">        unsubackPacket.decode(buffer);</span>
         
-<span class="pc bpc" id="L635" title="1 of 2 branches missed.">        if (unsubackPacket.getType() != MqttSnConstants.TYPE_UNSUBACK) {</span>
-<span class="nc" id="L636">        	throw new MqttSnClientException(&quot;Was expecting UNSUBACK packet but received: &quot; + MqttSnUtility.decodeType(unsubackPacket.getType()));</span>
+<span class="pc bpc" id="L690" title="1 of 2 branches missed.">        if (unsubackPacket.getType() != MqttSnConstants.TYPE_UNSUBACK) {</span>
+<span class="nc" id="L691">        	throw new MqttSnClientException(&quot;Was expecting UNSUBACK packet but received: &quot; + MqttSnUtility.decodeType(unsubackPacket.getType()));</span>
         }
 
         // Check that the Message ID matches
-<span class="fc" id="L640">        received_message_id = unsubackPacket.getMessageID();</span>
-<span class="pc bpc" id="L641" title="1 of 2 branches missed.">        if (received_message_id != this.nextMessageID-1) {</span>
-<span class="nc" id="L642">            logger.warn(&quot;Message id in UNSUBACK does not equal message id sent&quot;);</span>
-<span class="nc" id="L643">            logger.debug(&quot;Expecting: &quot; + (this.nextMessageID-1));</span>
-<span class="nc" id="L644">            logger.debug(&quot;Actual: &quot; + received_message_id);</span>
+<span class="fc" id="L695">        received_message_id = unsubackPacket.getMessageID();</span>
+<span class="pc bpc" id="L696" title="1 of 2 branches missed.">        if (received_message_id != this.nextMessageID-1) {</span>
+<span class="nc" id="L697">            logger.warn(&quot;Message id in UNSUBACK does not equal message id sent&quot;);</span>
+<span class="nc" id="L698">            logger.debug(&quot;Expecting: &quot; + (this.nextMessageID-1));</span>
+<span class="nc" id="L699">            logger.debug(&quot;Actual: &quot; + received_message_id);</span>
         }
-<span class="fc" id="L646">    }</span>
+<span class="fc" id="L701">    }</span>
     
-    private void sendPuback(PublishPacket publish, byte return_code) throws MqttSnClientException {
-<span class="fc" id="L649">        PubAckPacket puback = new PubAckPacket();</span>
-<span class="fc" id="L650">        puback.setTopicID(publish.getTopicID());</span>
-<span class="fc" id="L651">        puback.setMessageID(publish.getMessageID());</span>
-<span class="fc" id="L652">        puback.setReturnCode(return_code);</span>
-<span class="fc" id="L653">        logger.debug(&quot;Sending PUBACK packet...&quot;);    </span>
-<span class="fc" id="L654">        this.sendPacket(puback.encode());</span>
-<span class="fc" id="L655">    }</span>
+    private void sendPuback(short topicID, short messageID, byte retCode) throws MqttSnClientException {
+<span class="fc" id="L704">        PubAckPacket packet = new PubAckPacket();</span>
+<span class="fc" id="L705">        packet.setTopicID(topicID);</span>
+<span class="fc" id="L706">        packet.setMessageID(messageID);</span>
+<span class="fc" id="L707">        packet.setReturnCode(retCode);</span>
+<span class="fc" id="L708">        logger.debug(&quot;Sending PUBACK packet...&quot;);    </span>
+<span class="fc" id="L709">        this.sendPacket(packet.encode());</span>
+<span class="fc" id="L710">    }</span>
     
+    private void sendPubRel(short messageID) throws MqttSnClientException {
+<span class="fc" id="L713">        PubRelPacket packet = new PubRelPacket();</span>
+<span class="fc" id="L714">        packet.setMessageID(messageID);</span>
+<span class="fc" id="L715">        logger.debug(&quot;Sending PUBREL packet...&quot;);    </span>
+<span class="fc" id="L716">        this.sendPacket(packet.encode());</span>
+<span class="fc" id="L717">    }</span>
+
+    private void sendPubRec(short messageID) throws MqttSnClientException {
+<span class="fc" id="L720">        PubRecPacket packet = new PubRecPacket();</span>
+<span class="fc" id="L721">        packet.setMessageID(messageID);</span>
+<span class="fc" id="L722">        logger.debug(&quot;Sending PUBREC packet...&quot;);    </span>
+<span class="fc" id="L723">        this.sendPacket(packet.encode());</span>
+<span class="fc" id="L724">    }</span>
+    
+    private void sendPubComp(short messageID) throws MqttSnClientException {
+<span class="fc" id="L727">        PubCompPacket packet = new PubCompPacket();</span>
+<span class="fc" id="L728">        packet.setMessageID(messageID);</span>
+<span class="fc" id="L729">        logger.debug(&quot;Sending PUBCOMP packet...&quot;);    </span>
+<span class="fc" id="L730">        this.sendPacket(packet.encode());</span>
+<span class="fc" id="L731">    }</span>
+    
+    private void receivePubRel() throws MqttSnClientException {
+<span class="fc" id="L734">    	byte[] buffer = this.waitFor(MqttSnConstants.TYPE_PUBREL);</span>
+<span class="pc bpc" id="L735" title="1 of 2 branches missed.">        if (buffer == null) {</span>
+<span class="nc" id="L736">            throw new MqttSnClientException(&quot;Failed to recceive UDP message.&quot;);</span>
+        }
+<span class="fc" id="L738">        PubRelPacket packet = new PubRelPacket();</span>
+<span class="fc" id="L739">        packet.decode(buffer);</span>
+<span class="pc bpc" id="L740" title="1 of 2 branches missed.">        if (packet.getType() != MqttSnConstants.TYPE_PUBREL) {</span>
+<span class="nc" id="L741">        	throw new MqttSnClientException(&quot;Was expecting PUBREL packet but received: &quot; + MqttSnUtility.decodeType(packet.getType()));</span>
+        }
+<span class="fc" id="L743">        logger.debug(&quot;Received PUBREL packet&quot;);</span>
+<span class="fc" id="L744">	}</span>
+        
     private short receiveRegack() throws MqttSnClientException {
-<span class="fc" id="L658">    	byte[] buffer = this.waitFor(MqttSnConstants.TYPE_REGACK);</span>
-    	// byte[] buffer = this.receivePacketSync();
-<span class="pc bpc" id="L660" title="1 of 2 branches missed.">        if (buffer == null) {</span>
-<span class="nc" id="L661">            throw new MqttSnClientException(&quot;Failed to connect to register topic.&quot;);</span>
+<span class="fc" id="L747">    	byte[] buffer = this.waitFor(MqttSnConstants.TYPE_REGACK);</span>
+<span class="pc bpc" id="L748" title="1 of 2 branches missed.">        if (buffer == null) {</span>
+<span class="nc" id="L749">            throw new MqttSnClientException(&quot;Failed to connect to register topic.&quot;);</span>
         }
         short received_message_id, received_topic_id;
-<span class="fc" id="L664">        RegackPacket packet = new RegackPacket();</span>
-<span class="fc" id="L665">        packet.decode(buffer);</span>
+<span class="fc" id="L752">        RegackPacket packet = new RegackPacket();</span>
+<span class="fc" id="L753">        packet.decode(buffer);</span>
         
-<span class="pc bpc" id="L667" title="1 of 2 branches missed.">        if (packet.getType() != MqttSnConstants.TYPE_REGACK) {</span>
-<span class="nc" id="L668">        	throw new MqttSnClientException(&quot;Was expecting REGACK packet but received: &quot; + MqttSnUtility.decodeType(packet.getType()));</span>
-        }
-        
+<span class="pc bpc" id="L755" title="1 of 2 branches missed.">        if (packet.getType() != MqttSnConstants.TYPE_REGACK) {</span>
+<span class="nc" id="L756">        	throw new MqttSnClientException(&quot;Was expecting REGACK packet but received: &quot; + MqttSnUtility.decodeType(packet.getType()));</span>
+        }        
 
-<span class="fc" id="L672">        int retCode = packet.getReturnCode();</span>
+<span class="fc" id="L759">        int retCode = packet.getReturnCode();</span>
         // Check Regack return code
-<span class="fc" id="L674">        logger.debug(&quot;REGACK return code: &quot; + retCode);</span>
+<span class="fc" id="L761">        logger.debug(&quot;REGACK return code: &quot; + retCode);</span>
         
         
-<span class="pc bpc" id="L677" title="1 of 2 branches missed.">        if (retCode &gt; 0) {</span>
-<span class="nc" id="L678">        	throw new MqttSnClientException(&quot;REGISTER failed: &quot; + MqttSnUtility.decodeReturnCode(packet.getReturnCode()));         </span>
+<span class="pc bpc" id="L764" title="1 of 2 branches missed.">        if (retCode &gt; 0) {</span>
+<span class="nc" id="L765">        	throw new MqttSnClientException(&quot;REGISTER failed: &quot; + MqttSnUtility.decodeReturnCode(packet.getReturnCode()));         </span>
         }
 
         // Check that the Message ID matches
-<span class="fc" id="L682">        received_message_id = packet.getMessageID();</span>
-<span class="pc bpc" id="L683" title="1 of 2 branches missed.">        if (received_message_id != this.nextMessageID-1) {</span>
-<span class="nc" id="L684">            logger.warn(&quot;Message id in Regack does not equal message id sent&quot;);</span>
+<span class="fc" id="L769">        received_message_id = packet.getMessageID();</span>
+<span class="pc bpc" id="L770" title="1 of 2 branches missed.">        if (received_message_id != this.nextMessageID-1) {</span>
+<span class="nc" id="L771">            logger.warn(&quot;Message id in Regack does not equal message id sent&quot;);</span>
         }
 
         // Return the topic ID returned by the gateway
-<span class="fc" id="L688">        received_topic_id = packet.getTopicID();</span>
-<span class="fc" id="L689">        logger.debug(&quot;REGACK topic id:&quot; + received_topic_id);</span>
+<span class="fc" id="L775">        received_topic_id = packet.getTopicID();</span>
+<span class="fc" id="L776">        logger.debug(&quot;REGACK topic id:&quot; + received_topic_id);</span>
 
-<span class="fc" id="L691">        return received_topic_id;</span>
+<span class="fc" id="L778">        return received_topic_id;</span>
     }
     
     private void processRegister(byte[] packet) throws MqttSnClientException {
-<span class="fc" id="L695">    	RegisterPacket registerPacket = new RegisterPacket();</span>
-<span class="fc" id="L696">    	registerPacket.decode(packet);</span>
+<span class="fc" id="L782">    	RegisterPacket registerPacket = new RegisterPacket();</span>
+<span class="fc" id="L783">    	registerPacket.decode(packet);</span>
     	
-<span class="pc bpc" id="L698" title="1 of 2 branches missed.">        if (registerPacket.getType() != MqttSnConstants.TYPE_REGISTER) {</span>
-<span class="nc" id="L699">        	throw new MqttSnClientException(&quot;Was expecting REGISTER packet but received: &quot; + MqttSnUtility.decodeType(registerPacket.getType()));</span>
+<span class="pc bpc" id="L785" title="1 of 2 branches missed.">        if (registerPacket.getType() != MqttSnConstants.TYPE_REGISTER) {</span>
+<span class="nc" id="L786">        	throw new MqttSnClientException(&quot;Was expecting REGISTER packet but received: &quot; + MqttSnUtility.decodeType(registerPacket.getType()));</span>
         }
     	
-<span class="fc" id="L702">        short message_id = registerPacket.getMessageID();</span>
-<span class="fc" id="L703">        short topic_id = registerPacket.getTopicID();</span>
-<span class="fc" id="L704">        String topic_name = registerPacket.getTopicName();</span>
+<span class="fc" id="L789">        short message_id = registerPacket.getMessageID();</span>
+<span class="fc" id="L790">        short topic_id = registerPacket.getTopicID();</span>
+<span class="fc" id="L791">        String topic_name = registerPacket.getTopicName();</span>
 
         // Add it to the topic map
-<span class="fc" id="L707">        this.registerTopic(topic_id, topic_name);</span>
+<span class="fc" id="L794">        this.registerTopic(topic_id, topic_name);</span>
         
         // Respond to gateway with REGACK
-<span class="fc" id="L710">        this.sendRegack(topic_id, message_id);</span>
-<span class="fc" id="L711">    }</span>
+<span class="fc" id="L797">        this.sendRegack(topic_id, message_id);</span>
+<span class="fc" id="L798">    }</span>
     
     void sendRegack(short topic_id, short message_id) throws MqttSnClientException {
-<span class="fc" id="L714">        RegackPacket regackPacket = new RegackPacket();</span>
-<span class="fc" id="L715">        regackPacket.setMessageID(message_id);</span>
-<span class="fc" id="L716">        regackPacket.setReturnCode((byte) 0);</span>
-<span class="fc" id="L717">        regackPacket.setTopicID(topic_id);</span>
-<span class="fc" id="L718">        this.sendPacket(regackPacket.encode());</span>
-<span class="fc" id="L719">    }</span>
+<span class="fc" id="L801">        RegackPacket regackPacket = new RegackPacket();</span>
+<span class="fc" id="L802">        regackPacket.setMessageID(message_id);</span>
+<span class="fc" id="L803">        regackPacket.setReturnCode((byte) 0);</span>
+<span class="fc" id="L804">        regackPacket.setTopicID(topic_id);</span>
+<span class="fc" id="L805">        this.sendPacket(regackPacket.encode());</span>
+<span class="fc" id="L806">    }</span>
     
     private byte[] waitFor(byte type) throws MqttSnClientException {
-<span class="fc" id="L722">    	logger.debug(&quot;Expecting '&quot; + MqttSnUtility.decodeType(type) + &quot;' message&quot;);</span>
-<span class="fc" id="L723">    	long startedWaiting = System.currentTimeMillis();</span>
+<span class="fc" id="L809">    	logger.debug(&quot;Expecting '&quot; + MqttSnUtility.decodeType(type) + &quot;' message&quot;);</span>
+<span class="fc" id="L810">    	long startedWaiting = System.currentTimeMillis();</span>
 
-<span class="fc" id="L725">    	boolean running = true;</span>
+<span class="fc" id="L812">    	boolean running = true;</span>
     	
-<span class="fc bfc" id="L727" title="All 2 branches covered.">        while(running) {</span>
-<span class="fc" id="L728">            long now = System.currentTimeMillis();</span>
+<span class="fc bfc" id="L814" title="All 2 branches covered.">        while(running) {</span>
+<span class="fc" id="L815">            long now = System.currentTimeMillis();</span>
 
             // Time to send a ping?
-<span class="pc bpc" id="L731" title="1 of 4 branches missed.">            if (this.keepAlive &gt; 0 &amp;&amp; (now - lastTransmit) &gt;= this.getKeepAliveMillis()) {</span>
-<span class="fc" id="L732">                this.sendPingReq();</span>
+<span class="pc bpc" id="L818" title="1 of 4 branches missed.">            if (this.keepAlive &gt; 0 &amp;&amp; (now - lastTransmit) &gt;= this.getKeepAliveMillis()) {</span>
+<span class="fc" id="L819">                this.sendPingReq();</span>
             }
 
                 // byte[] buf = this.receivePacket();
-<span class="fc" id="L736">            	byte[] buf = this.receivePacketASync();</span>
-<span class="fc bfc" id="L737" title="All 2 branches covered.">                if (buf != null) {</span>
+<span class="fc" id="L823">            	byte[] buf = this.receivePacketASync();</span>
+<span class="fc bfc" id="L824" title="All 2 branches covered.">                if (buf != null) {</span>
                 	
-<span class="fc" id="L739">                	byte msgType = buf[1];</span>
-<span class="fc" id="L740">                	logger.debug(&quot;Received '&quot; + MqttSnUtility.decodeType(msgType) + &quot;' message&quot;);</span>
-<span class="fc bfc" id="L741" title="All 4 branches covered.">                    switch(msgType) {</span>
+<span class="fc" id="L826">                	byte msgType = buf[1];</span>
+<span class="fc" id="L827">                	logger.debug(&quot;Received '&quot; + MqttSnUtility.decodeType(msgType) + &quot;' message&quot;);</span>
+<span class="fc bfc" id="L828" title="All 4 branches covered.">                    switch(msgType) {</span>
 
                         case MqttSnConstants.TYPE_REGISTER:
-<span class="fc" id="L744">                        	this.processRegister(buf);</span>
-<span class="fc" id="L745">                            break;</span>
+<span class="fc" id="L831">                        	this.processRegister(buf);</span>
+<span class="fc" id="L832">                            break;</span>
                             
                         case MqttSnConstants.TYPE_ADVERTISE:
-<span class="fc" id="L748">                            running = false;</span>
-<span class="fc" id="L749">                            break;</span>
+<span class="fc" id="L835">                            running = false;</span>
+<span class="fc" id="L836">                            break;</span>
 
                         case MqttSnConstants.TYPE_DISCONNECT:
-<span class="pc bpc" id="L752" title="1 of 2 branches missed.">                            if (type != MqttSnConstants.TYPE_DISCONNECT) {</span>
-<span class="nc" id="L753">                                throw new MqttSnClientException(&quot;Received DISCONNECT from gateway.&quot;);</span>
+<span class="pc bpc" id="L839" title="1 of 2 branches missed.">                            if (type != MqttSnConstants.TYPE_DISCONNECT) {</span>
+<span class="nc" id="L840">                                throw new MqttSnClientException(&quot;Received DISCONNECT from gateway.&quot;);</span>
                                 // logger.warn(&quot;Was expecting '&quot; + MqttSnUtility.decodeType(type) + &quot;' packet but received: &quot; + MqttSnUtility.decodeType(msgType));    
                             }
                             break;
 
                         default:
-<span class="fc bfc" id="L759" title="All 2 branches covered.">                            if (msgType != type) {</span>
-<span class="fc" id="L760">                                logger.warn(&quot;Was expecting '&quot; + MqttSnUtility.decodeType(type) + &quot;' packet but received: &quot; + MqttSnUtility.decodeType(msgType));    </span>
+<span class="fc bfc" id="L846" title="All 2 branches covered.">                            if (msgType != type) {</span>
+<span class="fc" id="L847">                                logger.warn(&quot;Was expecting '&quot; + MqttSnUtility.decodeType(type) + &quot;' packet but received: &quot; + MqttSnUtility.decodeType(msgType));    </span>
                             }
                             // TODO: da ritestare
                             // break;
                     }
 
                     // Did we find what we were looking for?
-<span class="fc bfc" id="L767" title="All 2 branches covered.">                    if (msgType == type) {</span>
-<span class="fc" id="L768">                        return buf;</span>
+<span class="fc bfc" id="L854" title="All 2 branches covered.">                    if (msgType == type) {</span>
+<span class="fc" id="L855">                        return buf;</span>
                     }
                 }
 
 
             // Check for receive timeout
-<span class="pc bpc" id="L774" title="2 of 4 branches missed.">            if (this.keepAlive &gt; 0 &amp;&amp; (now - this.lastReceive) &gt;= (this.getKeepAliveMillis() * 1.5)) {</span>
-<span class="nc" id="L775">            	logger.warn(&quot;Keep alive error: timed out while waiting for a '&quot; + MqttSnUtility.decodeType(type) + &quot;' from gateway.&quot;); </span>
-<span class="nc" id="L776">            	break;</span>
+<span class="pc bpc" id="L861" title="2 of 4 branches missed.">            if (this.keepAlive &gt; 0 &amp;&amp; (now - this.lastReceive) &gt;= (this.getKeepAliveMillis() * 1.5)) {</span>
+<span class="nc" id="L862">            	logger.warn(&quot;Keep alive error: timed out while waiting for a '&quot; + MqttSnUtility.decodeType(type) + &quot;' from gateway.&quot;); </span>
+<span class="nc" id="L863">            	break;</span>
             }
 
             // Check if we have timed out waiting for the packet we are looking for
-<span class="fc bfc" id="L780" title="All 2 branches covered.">            if ((now - startedWaiting) &gt;= this.getTimeoutMillis()) {</span>
-<span class="fc" id="L781">                logger.warn(&quot;Timed out while waiting for a '&quot; + MqttSnUtility.decodeType(type) +&quot;' from gateway.&quot;);</span>
-<span class="fc" id="L782">                break;</span>
+<span class="pc bpc" id="L867" title="1 of 2 branches missed.">            if ((now - startedWaiting) &gt;= this.getTimeoutMillis()) {</span>
+<span class="nc" id="L868">                logger.warn(&quot;Timed out while waiting for a '&quot; + MqttSnUtility.decodeType(type) +&quot;' from gateway.&quot;);</span>
+<span class="nc" id="L869">                break;</span>
             }
-<span class="fc" id="L784">        }</span>
+<span class="fc" id="L871">        }</span>
 
-<span class="fc" id="L786">        return null;</span>
+<span class="fc" id="L873">        return null;</span>
     }
     
     private void registerTopic(Short topic_id, String topic_name) throws MqttSnClientException {
         
         // Check topic ID is valid
-<span class="pc bpc" id="L792" title="2 of 4 branches missed.">        if (topic_id == 0x0000 || topic_id == 0xFFFF) {</span>
-<span class="nc" id="L793">            throw new MqttSnClientException(&quot;Attempted to register invalid topic id: &quot; + topic_id);</span>
+<span class="pc bpc" id="L879" title="2 of 4 branches missed.">        if (topic_id == 0x0000 || topic_id == 0xFFFF) {</span>
+<span class="nc" id="L880">            throw new MqttSnClientException(&quot;Attempted to register invalid topic id: &quot; + topic_id);</span>
         }
 
         // Check topic name is valid
-<span class="pc bpc" id="L797" title="3 of 6 branches missed.">        if (topic_name == null || topic_name.length() &lt;= 0 || topic_name.length() &gt; MqttSnConstants.MAX_TOPIC_LENGTH) {</span>
-<span class="nc" id="L798">        	throw new MqttSnClientException(&quot;Attempted to register invalid topic name.&quot;);</span>
+<span class="pc bpc" id="L884" title="3 of 6 branches missed.">        if (topic_name == null || topic_name.length() &lt;= 0 || topic_name.length() &gt; MqttSnConstants.MAX_TOPIC_LENGTH) {</span>
+<span class="nc" id="L885">        	throw new MqttSnClientException(&quot;Attempted to register invalid topic name.&quot;);</span>
         }
 
-<span class="fc" id="L801">        logger.debug(&quot;Registering topic &quot; + topic_id + &quot;=&quot; + topic_name);</span>
+<span class="fc" id="L888">        logger.debug(&quot;Registering topic &quot; + topic_id + &quot;=&quot; + topic_name);</span>
 
-<span class="fc" id="L803">       this.topicMap.put(topic_id, topic_name);</span>
-<span class="fc" id="L804">    }</span>
+<span class="fc" id="L890">       this.topicMap.put(topic_id, topic_name);</span>
+<span class="fc" id="L891">    }</span>
     
     private void unregisterTopic(Short topic_id) throws MqttSnClientException {
         
         // Check topic ID is valid
-<span class="pc bpc" id="L809" title="2 of 4 branches missed.">        if (topic_id == 0x0000 || topic_id == 0xFFFF) {</span>
-<span class="nc" id="L810">            throw new MqttSnClientException(&quot;Attempted to register invalid topic id: &quot; + topic_id);</span>
+<span class="pc bpc" id="L896" title="2 of 4 branches missed.">        if (topic_id == 0x0000 || topic_id == 0xFFFF) {</span>
+<span class="nc" id="L897">            throw new MqttSnClientException(&quot;Attempted to register invalid topic id: &quot; + topic_id);</span>
         }
-<span class="fc" id="L812">        String topic_name = this.topicMap.get(topic_id);</span>
-<span class="fc" id="L813">        logger.debug(&quot;Unregistering topic ID '&quot; + topic_id + &quot;': &quot; + topic_name);</span>
-<span class="fc" id="L814">        this.topicMap.remove(topic_id);</span>
-<span class="fc" id="L815">    }</span>
+<span class="fc" id="L899">        String topic_name = this.topicMap.get(topic_id);</span>
+<span class="fc" id="L900">        logger.debug(&quot;Unregistering topic ID '&quot; + topic_id + &quot;': &quot; + topic_name);</span>
+<span class="fc" id="L901">        this.topicMap.remove(topic_id);</span>
+<span class="fc" id="L902">    }</span>
     
     private Short searchTopicId(String topic_name) throws MqttSnClientException {
-<span class="fc bfc" id="L818" title="All 2 branches covered.">    	for (Map.Entry&lt;Short, String&gt; entry : this.topicMap.entrySet()) {</span>
-<span class="fc" id="L819">            Short key = entry.getKey();</span>
-<span class="fc" id="L820">            String value = entry.getValue();</span>
-<span class="pc bpc" id="L821" title="1 of 2 branches missed.">            if (topic_name.equals(value)) {</span>
-<span class="fc" id="L822">            	return key;</span>
+<span class="fc bfc" id="L905" title="All 2 branches covered.">    	for (Map.Entry&lt;Short, String&gt; entry : this.topicMap.entrySet()) {</span>
+<span class="fc" id="L906">            Short key = entry.getKey();</span>
+<span class="fc" id="L907">            String value = entry.getValue();</span>
+<span class="pc bpc" id="L908" title="1 of 2 branches missed.">            if (topic_name.equals(value)) {</span>
+<span class="fc" id="L909">            	return key;</span>
             }
-<span class="nc" id="L824">        }</span>
-<span class="fc" id="L825">        return null;</span>
+<span class="nc" id="L911">        }</span>
+<span class="fc" id="L912">        return null;</span>
     }
     
     private void sendPingReq() throws MqttSnClientException {
-<span class="fc" id="L829">    	PingReqPacket pingReqPacket = new PingReqPacket();</span>
-<span class="fc" id="L830">        this.sendPacket(pingReqPacket.encode());</span>
-<span class="fc" id="L831">    }</span>
+<span class="fc" id="L916">    	PingReqPacket pingReqPacket = new PingReqPacket();</span>
+<span class="fc" id="L917">        this.sendPacket(pingReqPacket.encode());</span>
+<span class="fc" id="L918">    }</span>
     
     private void sendPacket(byte[] buf) throws MqttSnClientException {
-<span class="fc" id="L834">    	DatagramPacket datagramPacket = new DatagramPacket(buf, buf.length, address, this.port);</span>
+<span class="fc" id="L921">    	DatagramPacket datagramPacket = new DatagramPacket(buf, buf.length, address, this.port);</span>
         try {
-<span class="fc" id="L836">        	this.datagramSocket.setSoTimeout((int) this.getTimeoutMillis());</span>
-<span class="fc" id="L837">        	logger.debug(&quot;Sending &quot; + MqttSnUtility.decodeType(buf[1])+ &quot; packet...&quot;);</span>
-<span class="fc" id="L838">        	logger.debug(&quot;Send &quot; + buf.length + &quot; bytes: &quot;+ HexUtils.bytesToHex(buf));</span>
-<span class="fc" id="L839">			datagramSocket.send(datagramPacket);</span>
+<span class="fc" id="L923">        	this.datagramSocket.setSoTimeout((int) this.getTimeoutMillis());</span>
+<span class="fc" id="L924">        	logger.debug(&quot;Sending &quot; + MqttSnUtility.decodeType(buf[1])+ &quot; packet...&quot;);</span>
+<span class="fc" id="L925">        	logger.debug(&quot;Send &quot; + buf.length + &quot; bytes: &quot;+ HexUtils.bytesToHex(buf));</span>
+<span class="fc" id="L926">			datagramSocket.send(datagramPacket);</span>
 			
 			// Store the last time that we sent a packet
-<span class="fc" id="L842">			this.lastTransmit = System.currentTimeMillis();</span>
-<span class="nc" id="L843">	    } catch (IOException e) {</span>
-<span class="nc" id="L844">	    	throw new MqttSnClientException(e);</span>
-<span class="fc" id="L845">		}</span>
-<span class="fc" id="L846">    }</span>
+<span class="fc" id="L929">			this.lastTransmit = System.currentTimeMillis();</span>
+<span class="nc" id="L930">	    } catch (IOException e) {</span>
+<span class="nc" id="L931">	    	throw new MqttSnClientException(e);</span>
+<span class="fc" id="L932">		}</span>
+<span class="fc" id="L933">    }</span>
     
     private byte[] receivePacketSync() throws MqttSnClientException {
-<span class="fc" id="L849">    	byte[] received = null;</span>
+<span class="fc" id="L936">    	byte[] received = null;</span>
 
         try {
-<span class="fc" id="L852">        	byte[] buffer = new byte[MqttSnConstants.MAX_PACKET_LENGTH_EXTENDED];</span>
-<span class="fc" id="L853">        	this.datagramSocket.setSoTimeout((int) this.getTimeoutMillis());</span>
-<span class="fc" id="L854">        	DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);</span>
-<span class="fc" id="L855">        	datagramSocket.receive(datagramPacket);</span>
-<span class="pc bpc" id="L856" title="1 of 2 branches missed.">	        if (datagramPacket.getData() == null) {</span>
-<span class="nc" id="L857">	        	return null;</span>
+<span class="fc" id="L939">        	byte[] buffer = new byte[MqttSnConstants.MAX_PACKET_LENGTH_EXTENDED];</span>
+<span class="fc" id="L940">        	this.datagramSocket.setSoTimeout((int) this.getTimeoutMillis());</span>
+<span class="fc" id="L941">        	DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);</span>
+<span class="fc" id="L942">        	datagramSocket.receive(datagramPacket);</span>
+<span class="pc bpc" id="L943" title="1 of 2 branches missed.">	        if (datagramPacket.getData() == null) {</span>
+<span class="nc" id="L944">	        	return null;</span>
 	        }
-<span class="fc" id="L859">	        int length = buffer[0];</span>
-<span class="fc" id="L860">	        received = new byte[length];</span>
-<span class="fc" id="L861">	        System.arraycopy(buffer, 0, received, 0, length);</span>
+<span class="fc" id="L946">	        int length = buffer[0];</span>
+<span class="fc" id="L947">	        received = new byte[length];</span>
+<span class="fc" id="L948">	        System.arraycopy(buffer, 0, received, 0, length);</span>
 	        
-<span class="fc" id="L863">	        logger.debug(&quot;Received &quot; + received.length + &quot; bytes: &quot; + HexUtils.bytesToHex(received));</span>
-<span class="fc" id="L864">	        logger.debug(&quot;Received &quot; + MqttSnUtility.decodeType(received[1])+ &quot; packet...&quot;);</span>
+<span class="fc" id="L950">	        logger.debug(&quot;Received &quot; + received.length + &quot; bytes: &quot; + HexUtils.bytesToHex(received));</span>
+<span class="fc" id="L951">	        logger.debug(&quot;Received &quot; + MqttSnUtility.decodeType(received[1])+ &quot; packet...&quot;);</span>
 	        
 	        // Store the last time that we received a packet
-<span class="fc" id="L867">	        this.lastReceive = System.currentTimeMillis();</span>
-<span class="nc" id="L868">	    } catch (IOException e) {</span>
-<span class="nc" id="L869">	    	throw new MqttSnClientException(e);</span>
-<span class="fc" id="L870">		}</span>
+<span class="fc" id="L954">	        this.lastReceive = System.currentTimeMillis();</span>
+<span class="nc" id="L955">	    } catch (IOException e) {</span>
+<span class="nc" id="L956">	    	throw new MqttSnClientException(e);</span>
+<span class="fc" id="L957">		}</span>
 
-<span class="fc" id="L872">        return received;</span>
+<span class="fc" id="L959">        return received;</span>
     }
     
     private byte[] receivePacketASync() throws MqttSnClientException {
 
-<span class="fc" id="L877">        byte[] response = null;</span>
+<span class="fc" id="L964">        byte[] response = null;</span>
 		try {
-<span class="fc" id="L879">		    Receiver receiver = new Receiver(this.datagramSocket, 1000);</span>
-<span class="fc" id="L880">		    ExecutorService executor = Executors.newSingleThreadExecutor();</span>
-<span class="fc" id="L881">	        Future&lt;byte[]&gt; future = executor.submit(receiver);</span>
-<span class="fc" id="L882">			response = future.get(1000, TimeUnit.MILLISECONDS);</span>
-<span class="nc" id="L883">		} catch (InterruptedException e) {</span>
+<span class="fc" id="L966">		    Receiver receiver = new Receiver(this.datagramSocket, 1000);</span>
+<span class="fc" id="L967">		    ExecutorService executor = Executors.newSingleThreadExecutor();</span>
+<span class="fc" id="L968">	        Future&lt;byte[]&gt; future = executor.submit(receiver);</span>
+<span class="fc" id="L969">			response = future.get(1000, TimeUnit.MILLISECONDS);</span>
+<span class="nc" id="L970">		} catch (InterruptedException e) {</span>
 			// Ignore
-<span class="nc" id="L885">		} catch (ExecutionException e) {</span>
+<span class="nc" id="L972">		} catch (ExecutionException e) {</span>
 			// Ignore
-<span class="fc" id="L887">		} catch (TimeoutException e) {</span>
+<span class="fc" id="L974">		} catch (TimeoutException e) {</span>
 			// Ignore
-<span class="pc" id="L889">		}</span>
+<span class="pc" id="L976">		}</span>
 
-<span class="fc" id="L891">        return response;</span>
+<span class="fc" id="L978">        return response;</span>
     }
     
     
  
 	private void addMqttSnCallback(String topic, MqttSnListener aMqttSnCallback) {
-<span class="fc" id="L897">		logger.debug(&quot;Store MqttSnCallback for topic &quot; + topic);</span>
-<span class="fc" id="L898">		this.listOfMqttSnCallback.put(topic, aMqttSnCallback);</span>
-<span class="fc" id="L899">	}</span>
+<span class="fc" id="L984">		logger.debug(&quot;Store MqttSnCallback for topic &quot; + topic);</span>
+<span class="fc" id="L985">		this.listOfMqttSnCallback.put(topic, aMqttSnCallback);</span>
+<span class="fc" id="L986">	}</span>
 	
 	private void addMqttSnCallback(short topicID, MqttSnListener aMqttSnCallback) {
-<span class="fc" id="L902">		logger.debug(&quot;Store MqttSnCallback for topic ID &quot; + topicID);</span>
-<span class="fc" id="L903">		this.listOfMqttSnCallback.put(Short.toString(topicID), aMqttSnCallback);</span>
-<span class="fc" id="L904">	}</span>
+<span class="fc" id="L989">		logger.debug(&quot;Store MqttSnCallback for topic ID &quot; + topicID);</span>
+<span class="fc" id="L990">		this.listOfMqttSnCallback.put(Short.toString(topicID), aMqttSnCallback);</span>
+<span class="fc" id="L991">	}</span>
 	
 	private long getKeepAliveMillis() {
-<span class="fc" id="L907">		return this.keepAlive * 1000;</span>
+<span class="fc" id="L994">		return this.keepAlive * 1000;</span>
 	}
 	
 	private long getTimeoutMillis() {
-<span class="fc" id="L911">		return this.timeout * 1000;</span>
+<span class="fc" id="L998">		return this.timeout * 1000;</span>
 	}
 
 	public void setKeepAlive(short value) {
         // Store the keep alive period
-<span class="pc bpc" id="L916" title="1 of 2 branches missed.">        if (value &gt; 0) {</span>
-<span class="fc" id="L917">        	this.keepAlive = value;</span>
+<span class="pc bpc" id="L1003" title="1 of 2 branches missed.">        if (value &gt; 0) {</span>
+<span class="fc" id="L1004">        	this.keepAlive = value;</span>
         }
-<span class="fc" id="L919">	}</span>
+<span class="fc" id="L1006">	}</span>
 
 	public void setTimeout(byte value) throws MqttSnClientException {
-<span class="fc" id="L922">		this.timeout = value;</span>
-<span class="pc bpc" id="L923" title="1 of 2 branches missed.">		if (this.connected) {</span>
+<span class="fc" id="L1009">		this.timeout = value;</span>
+<span class="pc bpc" id="L1010" title="1 of 2 branches missed.">		if (this.connected) {</span>
 			try {
-<span class="nc" id="L925">				this.datagramSocket.setSoTimeout((int) this.getTimeoutMillis());</span>
-<span class="nc" id="L926">			} catch (SocketException e) {</span>
-<span class="nc" id="L927">				throw new MqttSnClientException(e);</span>
-<span class="nc" id="L928">			}</span>
+<span class="nc" id="L1012">				this.datagramSocket.setSoTimeout((int) this.getTimeoutMillis());</span>
+<span class="nc" id="L1013">			} catch (SocketException e) {</span>
+<span class="nc" id="L1014">				throw new MqttSnClientException(e);</span>
+<span class="nc" id="L1015">			}</span>
 		}
-<span class="fc" id="L930">	}</span>
+<span class="fc" id="L1017">	}</span>
 
 	public void setClientID(String value) {
-<span class="fc bfc" id="L933" title="All 2 branches covered.">		if (value == null) {</span>
-<span class="fc" id="L934">			this.clientID = &quot;mqtt-sn-java-&quot; + (new Random().nextInt() &amp; 0xffff);</span>
+<span class="fc bfc" id="L1020" title="All 2 branches covered.">		if (value == null) {</span>
+<span class="fc" id="L1021">			this.clientID = &quot;mqtt-sn-java-&quot; + (new Random().nextInt() &amp; 0xffff);</span>
 		} else {
-<span class="fc" id="L936">			this.clientID = value;</span>
+<span class="fc" id="L1023">			this.clientID = value;</span>
 		}
-<span class="fc" id="L938">	}</span>
+<span class="fc" id="L1025">	}</span>
 
 	public void setCleanSession(boolean value) {
-<span class="fc" id="L941">		this.cleanSession = value;</span>
-<span class="fc" id="L942">	}</span>
+<span class="fc" id="L1028">		this.cleanSession = value;</span>
+<span class="fc" id="L1029">	}</span>
 
 	public void setWill(String topic, String message, int qos, boolean retain) {
-<span class="fc" id="L945">		this.setWill(topic, message.getBytes(), qos, retain);</span>
-<span class="fc" id="L946">	}</span>
+<span class="fc" id="L1032">		this.setWill(topic, message.getBytes(), qos, retain);</span>
+<span class="fc" id="L1033">	}</span>
 	
 	public void setWill(String topic, byte[] message, int qos, boolean retain) {
-<span class="fc" id="L949">		this.willTopic = topic;</span>
-<span class="fc" id="L950">		this.willMessage = message;</span>
-<span class="fc" id="L951">		this.willQos = qos;</span>
-<span class="fc" id="L952">		this.willRetain = retain;</span>
-<span class="fc" id="L953">	}</span>
+<span class="fc" id="L1036">		this.willTopic = topic;</span>
+<span class="fc" id="L1037">		this.willMessage = message;</span>
+<span class="fc" id="L1038">		this.willQos = qos;</span>
+<span class="fc" id="L1039">		this.willRetain = retain;</span>
+<span class="fc" id="L1040">	}</span>
 	
 	public void setWillTopic(String value) {
-<span class="fc" id="L956">		this.willTopic = value;</span>
-<span class="fc" id="L957">	}</span>
+<span class="fc" id="L1043">		this.willTopic = value;</span>
+<span class="fc" id="L1044">	}</span>
 
 	public void setWillMessage(String value) {
-<span class="fc" id="L960">		this.setWillMessage(value.getBytes());</span>
-<span class="fc" id="L961">	}</span>
+<span class="fc" id="L1047">		this.setWillMessage(value.getBytes());</span>
+<span class="fc" id="L1048">	}</span>
 
 	public void setWillMessage(byte[] value) {
-<span class="fc" id="L964">		this.willMessage = value;</span>
-<span class="fc" id="L965">	}</span>
+<span class="fc" id="L1051">		this.willMessage = value;</span>
+<span class="fc" id="L1052">	}</span>
 
 	public void setWillQos(int value) {
-<span class="fc" id="L968">		this.willQos = value;</span>
-<span class="fc" id="L969">	}</span>
+<span class="fc" id="L1055">		this.willQos = value;</span>
+<span class="fc" id="L1056">	}</span>
 
 	public void setWillRetain(boolean value) {
-<span class="fc" id="L972">		this.willRetain = value;</span>
-<span class="fc" id="L973">	}</span>
+<span class="fc" id="L1059">		this.willRetain = value;</span>
+<span class="fc" id="L1060">	}</span>
 	
 	public static boolean isMatched(String topic, String topicFilter) {
         // Gestione dei casi in cui il topic o il topic filter siano vuoti
-<span class="pc bpc" id="L977" title="1 of 6 branches missed.">        if ((topic == null || topic.isEmpty()) &amp;&amp; topicFilter.equals(&quot;#&quot;)) {</span>
-<span class="fc" id="L978">            return true; // Un topic vuoto corrisponde solo al filtro &quot;#&quot;</span>
+<span class="pc bpc" id="L1064" title="1 of 6 branches missed.">        if ((topic == null || topic.isEmpty()) &amp;&amp; topicFilter.equals(&quot;#&quot;)) {</span>
+<span class="fc" id="L1065">            return true; // Un topic vuoto corrisponde solo al filtro &quot;#&quot;</span>
         }
-<span class="pc bpc" id="L980" title="2 of 8 branches missed.">        if (topic == null || topic.isEmpty() || topicFilter == null || topicFilter.isEmpty()) {</span>
-<span class="fc" id="L981">            return false; // Altri casi di topic o topic filter vuoti non corrispondono</span>
+<span class="pc bpc" id="L1067" title="2 of 8 branches missed.">        if (topic == null || topic.isEmpty() || topicFilter == null || topicFilter.isEmpty()) {</span>
+<span class="fc" id="L1068">            return false; // Altri casi di topic o topic filter vuoti non corrispondono</span>
         }
 
         // Dividi il topic e il topic filter in livelli
-<span class="fc" id="L985">        String[] topicLevels = topic.split(&quot;/&quot;);</span>
-<span class="fc" id="L986">        String[] filterLevels = topicFilter.split(&quot;/&quot;);</span>
+<span class="fc" id="L1072">        String[] topicLevels = topic.split(&quot;/&quot;);</span>
+<span class="fc" id="L1073">        String[] filterLevels = topicFilter.split(&quot;/&quot;);</span>
 
-<span class="fc" id="L988">        int topicLength = topicLevels.length;</span>
-<span class="fc" id="L989">        int filterLength = filterLevels.length;</span>
+<span class="fc" id="L1075">        int topicLength = topicLevels.length;</span>
+<span class="fc" id="L1076">        int filterLength = filterLevels.length;</span>
 
-<span class="fc bfc" id="L991" title="All 2 branches covered.">        for (int i = 0; i &lt; filterLength; i++) {</span>
+<span class="fc bfc" id="L1078" title="All 2 branches covered.">        for (int i = 0; i &lt; filterLength; i++) {</span>
             // Controlla se siamo oltre la lunghezza del topic
-<span class="fc bfc" id="L993" title="All 2 branches covered.">            if (i &gt;= topicLength) {</span>
+<span class="fc bfc" id="L1080" title="All 2 branches covered.">            if (i &gt;= topicLength) {</span>
                 // Restituisci true solo se il filtro termina con #
-<span class="fc" id="L995">                return filterLevels[i].equals(&quot;#&quot;);</span>
+<span class="fc" id="L1082">                return filterLevels[i].equals(&quot;#&quot;);</span>
             }
 
             // Controlla il carattere jolly '+'
-<span class="fc bfc" id="L999" title="All 2 branches covered.">            if (filterLevels[i].equals(&quot;+&quot;)) {</span>
-<span class="fc" id="L1000">                continue;</span>
+<span class="fc bfc" id="L1086" title="All 2 branches covered.">            if (filterLevels[i].equals(&quot;+&quot;)) {</span>
+<span class="fc" id="L1087">                continue;</span>
             }
 
             // Controlla il carattere jolly '#'
-<span class="fc bfc" id="L1004" title="All 2 branches covered.">            if (filterLevels[i].equals(&quot;#&quot;)) {</span>
-<span class="fc" id="L1005">                return true;</span>
+<span class="fc bfc" id="L1091" title="All 2 branches covered.">            if (filterLevels[i].equals(&quot;#&quot;)) {</span>
+<span class="fc" id="L1092">                return true;</span>
             }
 
             // Controlla la corrispondenza esatta
-<span class="fc bfc" id="L1009" title="All 2 branches covered.">            if (!filterLevels[i].equals(topicLevels[i])) {</span>
-<span class="fc" id="L1010">                return false;</span>
+<span class="fc bfc" id="L1096" title="All 2 branches covered.">            if (!filterLevels[i].equals(topicLevels[i])) {</span>
+<span class="fc" id="L1097">                return false;</span>
             }
         }
 
         // Verifica che il topic non abbia livelli extra
-<span class="fc bfc" id="L1015" title="All 2 branches covered.">        return topicLength == filterLength;</span>
+<span class="fc bfc" id="L1102" title="All 2 branches covered.">        return topicLength == filterLength;</span>
     }
 	
 	
-<span class="fc" id="L1019">	private HashMap&lt;String, MqttSnListener&gt; listOfMqttSnCallback = new HashMap&lt;String, MqttSnListener&gt;();</span>
+<span class="fc" id="L1106">	private HashMap&lt;String, MqttSnListener&gt; listOfMqttSnCallback = new HashMap&lt;String, MqttSnListener&gt;();</span>
     
 	private DatagramSocket datagramSocket;
 	private boolean reuseAddress;
@@ -1024,8 +1111,8 @@ public class MqttSnClient {
     private InetAddress address;
 	private int port;
 	private short keepAlive;
-<span class="fc" id="L1027">	private String clientID = null;</span>
-<span class="fc" id="L1028">	private boolean cleanSession = true;</span>
+<span class="fc" id="L1114">	private String clientID = null;</span>
+<span class="fc" id="L1115">	private boolean cleanSession = true;</span>
 	
 	private String willTopic;
 	private byte[] willMessage;
@@ -1040,42 +1127,42 @@ public class MqttSnClient {
 	private long lastReceive;	
 	private byte timeout;
 
-<span class="fc" id="L1043">	private HashMap&lt;Short,String&gt; topicMap = new HashMap&lt;Short, String&gt;();</span>
+<span class="fc" id="L1130">	private HashMap&lt;Short,String&gt; topicMap = new HashMap&lt;Short, String&gt;();</span>
 	
 	class Receiver implements Callable&lt;byte[]&gt; {
         private DatagramSocket socket;
         private int receiveTimeout;
 
-<span class="fc" id="L1049">        public Receiver(DatagramSocket socket, int receiveTimeout) {</span>
-<span class="fc" id="L1050">            this.socket = socket;</span>
-<span class="fc" id="L1051">            this.receiveTimeout = receiveTimeout;</span>
-<span class="fc" id="L1052">        }</span>
+<span class="fc" id="L1136">        public Receiver(DatagramSocket socket, int receiveTimeout) {</span>
+<span class="fc" id="L1137">            this.socket = socket;</span>
+<span class="fc" id="L1138">            this.receiveTimeout = receiveTimeout;</span>
+<span class="fc" id="L1139">        }</span>
 
         @Override
         public byte[] call() {
-<span class="fc" id="L1056">        	byte[] received = null;</span>
+<span class="fc" id="L1143">        	byte[] received = null;</span>
             try {
-<span class="fc" id="L1058">				socket.setSoTimeout(receiveTimeout);</span>
+<span class="fc" id="L1145">				socket.setSoTimeout(receiveTimeout);</span>
 
-<span class="fc" id="L1060">				received = new byte[MqttSnConstants.MAX_PACKET_LENGTH_EXTENDED];</span>
-<span class="fc" id="L1061">            	DatagramPacket datagramPacket = new DatagramPacket(received, received.length);</span>
-<span class="fc" id="L1062">            	this.socket.receive(datagramPacket);</span>
-<span class="pc bpc" id="L1063" title="1 of 2 branches missed.">    	        if (datagramPacket.getData() == null) {</span>
-<span class="nc" id="L1064">    	        	return null;</span>
+<span class="fc" id="L1147">				received = new byte[MqttSnConstants.MAX_PACKET_LENGTH_EXTENDED];</span>
+<span class="fc" id="L1148">            	DatagramPacket datagramPacket = new DatagramPacket(received, received.length);</span>
+<span class="fc" id="L1149">            	this.socket.receive(datagramPacket);</span>
+<span class="pc bpc" id="L1150" title="1 of 2 branches missed.">    	        if (datagramPacket.getData() == null) {</span>
+<span class="nc" id="L1151">    	        	return null;</span>
     	        }
-<span class="fc" id="L1066">    	        received = new String(datagramPacket.getData(), 0, datagramPacket.getLength()).getBytes();</span>
-<span class="fc" id="L1067">    	        logger.debug(&quot;Received &quot; + datagramPacket.getLength() + &quot; bytes: &quot; + HexUtils.bytesToHex(received));</span>
+<span class="fc" id="L1153">    	        received = new String(datagramPacket.getData(), 0, datagramPacket.getLength()).getBytes();</span>
+<span class="fc" id="L1154">    	        logger.debug(&quot;Received &quot; + datagramPacket.getLength() + &quot; bytes: &quot; + HexUtils.bytesToHex(received));</span>
     	        
     	        // Store the last time that we received a packet
-<span class="fc" id="L1070">    	        lastReceive = System.currentTimeMillis();</span>
-<span class="nc" id="L1071">			} catch (SocketException e) {</span>
+<span class="fc" id="L1157">    	        lastReceive = System.currentTimeMillis();</span>
+<span class="nc" id="L1158">			} catch (SocketException e) {</span>
 				// Ignore
-<span class="fc" id="L1073">			} catch (SocketTimeoutException e) {</span>
+<span class="fc" id="L1160">			} catch (SocketTimeoutException e) {</span>
 				// Ignore
-<span class="nc" id="L1075">            } catch (IOException e) {</span>
+<span class="nc" id="L1162">            } catch (IOException e) {</span>
             	// Ignore
-<span class="pc" id="L1077">			}</span>
-<span class="fc" id="L1078">            return received;</span>
+<span class="pc" id="L1164">			}</span>
+<span class="fc" id="L1165">            return received;</span>
         }
     }
 }

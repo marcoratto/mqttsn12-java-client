@@ -311,8 +311,8 @@ public class TestPublisher extends TestCase {
 		}
 	}
 	
-	public void testPublishLongTopicQos2() throws MqttSnClientException {
-		System.out.println(this.getClass().getName() + ".testPublishLongTopicQos2()");
+	public void testPublishNormalTopicWithQos2() throws MqttSnClientException {
+		System.out.println(this.getClass().getName() + ".testPublishNormalTopicWithQos2()");
 		try {		
 			String expected = "Hello " + (new Random().nextInt() & 0xffff);
 			
@@ -331,16 +331,14 @@ public class TestPublisher extends TestCase {
 			
 			mqttsnClient.sendDisconnect((short) 0);
 			mqttsnClient.close();
-		} catch (MqttSnClientException e) {
-			assertEquals("QOS=2 not supported", e.getMessage());
 		} catch (Throwable t) {
 			t.printStackTrace();
 			fail(t.getMessage());
 		}
 	}
 	
-	public void testPublishLongTopicQos0() throws MqttSnClientException {
-		System.out.println(this.getClass().getName() + ".testPublishLongTopicQos0()");
+	public void testPublishNormalTopicWithQos0() throws MqttSnClientException {
+		System.out.println(this.getClass().getName() + ".testPublishNormalTopicWithQos0()");
 		try {		
 			String expected = "Hello " + (new Random().nextInt() & 0xffff);
 			

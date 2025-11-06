@@ -21,9 +21,9 @@ Below you can find the list of the Message Type implemented:
 |0x0B|REGACK|Implemented||
 |0x0C|PUBLISH|Implemented||
 |0x0D|PUBACK|Implemented||
-|0x0E|PUBCOMP|NA||
-|0x0F|PUBREC|NA||
-|0x10|PUBREL|NA||
+|0x0E|PUBCOMP|Implemented||
+|0x0F|PUBREC|Implemented||
+|0x10|PUBREL|Implemented||
 |0x11|reserved|NA||
 |0x12|SUBSCRIBE|Implemented||
 |0x13|SUBACK|Implemented||

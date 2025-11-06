@@ -26,18 +26,17 @@ package io.github.marcoratto.mqttsn.packets;
 import java.nio.ByteBuffer;
 
 import io.github.marcoratto.mqttsn.MqttSnClientException;
+import io.github.marcoratto.mqttsn.MqttSnConstants;
 
 public class PubRecPacket {
 
     private byte length;
     private byte type;
-    private short topicID;
     private short messageID;
     
     public PubRecPacket() {
-    	this.length = 0;
-    	this.type = 0;
-    	this.topicID = 0;
+    	this.length = 4;
+    	this.type = MqttSnConstants.TYPE_PUBREC;
     	this.messageID = 0;
     }
     
@@ -45,7 +44,6 @@ public class PubRecPacket {
 		ByteBuffer buffer = ByteBuffer.wrap(value);
 		this.length = (byte) buffer.get();
 		this.type = (byte) buffer.get();
-		this.topicID = (short) buffer.getShort();
 		this.messageID = (short) buffer.getShort();
 	}
 	
@@ -56,9 +54,7 @@ public class PubRecPacket {
     		buffer = ByteBuffer.allocate(this.length);
             buffer.put(length);          
             buffer.put(type);              
-            buffer.putShort(topicID);        
             buffer.putShort(messageID);
-
 			
 		} catch (Exception e) {
 			throw new MqttSnClientException(e);
@@ -80,14 +76,6 @@ public class PubRecPacket {
 
 	public void setType(byte type) {
 		this.type = type;
-	}
-
-	public short getTopicID() {
-		return topicID;
-	}
-
-	public void setTopicID(short topicID) {
-		this.topicID = topicID;
 	}
 
 	public short getMessageID() {

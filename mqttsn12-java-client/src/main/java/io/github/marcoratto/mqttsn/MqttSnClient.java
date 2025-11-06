@@ -51,6 +51,9 @@ import io.github.marcoratto.mqttsn.packets.DisconnectResPacket;
 import io.github.marcoratto.mqttsn.packets.GatewayInfoPacket;
 import io.github.marcoratto.mqttsn.packets.PingReqPacket;
 import io.github.marcoratto.mqttsn.packets.PubAckPacket;
+import io.github.marcoratto.mqttsn.packets.PubRecPacket;
+import io.github.marcoratto.mqttsn.packets.PubRelPacket;
+import io.github.marcoratto.mqttsn.packets.PubCompPacket;
 import io.github.marcoratto.mqttsn.packets.PublishPacket;
 import io.github.marcoratto.mqttsn.packets.RegackPacket;
 import io.github.marcoratto.mqttsn.packets.RegisterPacket;
@@ -71,7 +74,7 @@ import io.github.marcoratto.mqttsn.util.HexUtils;
 
 public class MqttSnClient {
 	
-	public final static String VERSION = "1.0.0";
+	public final static String VERSION = "1.1.0";
 	
 	private final static Logger logger = LoggerFactory.getLogger(MqttSnClient.class);
 	
@@ -501,9 +504,15 @@ public class MqttSnClient {
 
         this.sendPacket(publishPacket.encode());
 
-        if (qos > 0) {
+        if (qos == MqttSnConstants.QOS_1) {
             this.receivePuback();
-        }
+        } else if (qos == MqttSnConstants.QOS_2) {
+			short msgId = this.receivePubRec();
+			
+			this.sendPubRel(msgId);
+			
+			this.receivePubComp();
+		}
     }
     
     public void polling() throws MqttSnClientException {
@@ -518,8 +527,12 @@ public class MqttSnClient {
         	
             byte packet_qos = (byte) (publishPacket.getFlags() & MqttSnConstants.FLAG_QOS_MASK);
             if (packet_qos == MqttSnConstants.FLAG_QOS_1) {
-            	this.sendPuback(publishPacket, MqttSnConstants.ACCEPTED);
-            }
+            	this.sendPuback(publishPacket.getTopicID(), publishPacket.getMessageID(), MqttSnConstants.ACCEPTED);
+            } else if (packet_qos == MqttSnConstants.FLAG_QOS_2) {
+			    this.sendPubRec(publishPacket.getMessageID());				    
+			    this.receivePubRel();
+			    this.sendPubComp(publishPacket.getMessageID());
+			}
             
         	short topic_id = publishPacket.getTopicID();
         	String topic_name = this.topicMap.get(publishPacket.getTopicID());
@@ -584,13 +597,55 @@ public class MqttSnClient {
         return received_topic_id;
     }
     
+    private short receivePubRec() throws MqttSnClientException {
+        byte[] buffer = this.waitFor(MqttSnConstants.TYPE_PUBREC);
+        short received_message_id, received_topic_id;
+
+        if (buffer == null) {
+            throw new MqttSnClientException ("Failed to subscribe to topic.");
+        }
+        PubRecPacket pubrecPacket = new PubRecPacket();
+        pubrecPacket.decode(buffer);
+        
+        if (pubrecPacket.getType() != MqttSnConstants.TYPE_PUBREC) {
+        	throw new MqttSnClientException("Was expecting PUBREC packet but received: " + MqttSnUtility.decodeType(pubrecPacket.getType()));
+        }
+        
+        // Check that the Message ID matches
+        received_message_id = pubrecPacket.getMessageID();
+        if (received_message_id != this.nextMessageID-1) {
+            logger.warn("Message id in PUBREC does not equal message id sent! Expecting: " + (this.nextMessageID-1) + ", Actual: " + received_message_id);
+        }
+        return received_message_id;
+    }
+    
+    private short receivePubComp() throws MqttSnClientException {
+        byte[] buffer = this.waitFor(MqttSnConstants.TYPE_PUBCOMP);
+        short received_message_id, received_topic_id;
+
+        if (buffer == null) {
+            throw new MqttSnClientException ("Failed to subscribe to topic.");
+        }
+        PubCompPacket pubcompPacket = new PubCompPacket();
+        pubcompPacket.decode(buffer);
+        
+        if (pubcompPacket.getType() != MqttSnConstants.TYPE_PUBCOMP) {
+        	throw new MqttSnClientException("Was expecting PUBCOMP packet but received: " + MqttSnUtility.decodeType(pubcompPacket.getType()));
+        }
+        
+        // Check that the Message ID matches
+        received_message_id = pubcompPacket.getMessageID();
+        if (received_message_id != this.nextMessageID-1) {
+            logger.warn("Message id in PUBCOMP does not equal message id sent! Expecting: " + (this.nextMessageID-1) + ", Actual: " + received_message_id);
+        }
+        return received_message_id;
+    }
+    
     private short receiveSuback() throws MqttSnClientException {
     	short received_message_id, received_topic_id;
     	
     	byte[] buffer = this.waitFor(MqttSnConstants.TYPE_SUBACK);
-    	
-    	// byte[] buffer = this.receivePacketSync();
-        
+    	        
         if (buffer == null) {
             throw new MqttSnClientException ("Failed to subscribe to topic.");
         }
@@ -645,18 +700,51 @@ public class MqttSnClient {
         }
     }
     
-    private void sendPuback(PublishPacket publish, byte return_code) throws MqttSnClientException {
-        PubAckPacket puback = new PubAckPacket();
-        puback.setTopicID(publish.getTopicID());
-        puback.setMessageID(publish.getMessageID());
-        puback.setReturnCode(return_code);
+    private void sendPuback(short topicID, short messageID, byte retCode) throws MqttSnClientException {
+        PubAckPacket packet = new PubAckPacket();
+        packet.setTopicID(topicID);
+        packet.setMessageID(messageID);
+        packet.setReturnCode(retCode);
         logger.debug("Sending PUBACK packet...");    
-        this.sendPacket(puback.encode());
+        this.sendPacket(packet.encode());
     }
     
+    private void sendPubRel(short messageID) throws MqttSnClientException {
+        PubRelPacket packet = new PubRelPacket();
+        packet.setMessageID(messageID);
+        logger.debug("Sending PUBREL packet...");    
+        this.sendPacket(packet.encode());
+    }
+
+    private void sendPubRec(short messageID) throws MqttSnClientException {
+        PubRecPacket packet = new PubRecPacket();
+        packet.setMessageID(messageID);
+        logger.debug("Sending PUBREC packet...");    
+        this.sendPacket(packet.encode());
+    }
+    
+    private void sendPubComp(short messageID) throws MqttSnClientException {
+        PubCompPacket packet = new PubCompPacket();
+        packet.setMessageID(messageID);
+        logger.debug("Sending PUBCOMP packet...");    
+        this.sendPacket(packet.encode());
+    }
+    
+    private void receivePubRel() throws MqttSnClientException {
+    	byte[] buffer = this.waitFor(MqttSnConstants.TYPE_PUBREL);
+        if (buffer == null) {
+            throw new MqttSnClientException("Failed to recceive UDP message.");
+        }
+        PubRelPacket packet = new PubRelPacket();
+        packet.decode(buffer);
+        if (packet.getType() != MqttSnConstants.TYPE_PUBREL) {
+        	throw new MqttSnClientException("Was expecting PUBREL packet but received: " + MqttSnUtility.decodeType(packet.getType()));
+        }
+        logger.debug("Received PUBREL packet");
+	}
+        
     private short receiveRegack() throws MqttSnClientException {
     	byte[] buffer = this.waitFor(MqttSnConstants.TYPE_REGACK);
-    	// byte[] buffer = this.receivePacketSync();
         if (buffer == null) {
             throw new MqttSnClientException("Failed to connect to register topic.");
         }
@@ -666,8 +754,7 @@ public class MqttSnClient {
         
         if (packet.getType() != MqttSnConstants.TYPE_REGACK) {
         	throw new MqttSnClientException("Was expecting REGACK packet but received: " + MqttSnUtility.decodeType(packet.getType()));
-        }
-        
+        }        
 
         int retCode = packet.getReturnCode();
         // Check Regack return code

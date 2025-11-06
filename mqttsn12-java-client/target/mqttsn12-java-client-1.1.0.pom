@@ -4,7 +4,7 @@
   <groupId>io.github.marcoratto</groupId>
   <artifactId>mqttsn12-java-client</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.1</version>
+  <version>1.1.0</version>
 
   <name>mqttsn12-java-client</name>
   <description>Java Client implementation of the Protocol MQTT-SN 1.2</description>

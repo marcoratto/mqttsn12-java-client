@@ -46,7 +46,8 @@ public class MqttSnUtility {
 			break;
 
 		case MqttSnConstants.QOS_2:
-			throw new MqttSnClientException("QOS=" + qos + " not supported");
+			out = MqttSnConstants.FLAG_QOS_2;
+			break;
 
 		default:
 			throw new MqttSnClientException("QOS=" + qos + " not valid");
@@ -64,10 +65,10 @@ public class MqttSnUtility {
 			return MqttSnConstants.QOS_1;
 		}
 		if (((flags & MqttSnConstants.FLAG_QOS_2) != 0)) {
-			throw new MqttSnClientException("QOS=2 not supported");
+			return MqttSnConstants.QOS_2;
 		}
 		if (((flags & MqttSnConstants.FLAG_QOS_N1) != 0)) {
-			return MqttSnConstants.QOS_0;
+			return MqttSnConstants.QOS_N1;
 		}
 		return 0;
 	}

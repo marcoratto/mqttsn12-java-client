@@ -26,77 +26,65 @@ package io.github.marcoratto.mqttsn.packets;
 import java.nio.ByteBuffer;
 
 import io.github.marcoratto.mqttsn.MqttSnClientException;
+import io.github.marcoratto.mqttsn.MqttSnConstants;
 
 public class PubRelPacket {
 
     private byte length;
     private byte type;
-    private short topicID;
     private short messageID;
     
-<span class="nc" id="L37">    public PubRelPacket() {</span>
-<span class="nc" id="L38">    	this.length = 0;</span>
-<span class="nc" id="L39">    	this.type = 0;</span>
-<span class="nc" id="L40">    	this.topicID = 0;</span>
-<span class="nc" id="L41">    	this.messageID = 0;</span>
-<span class="nc" id="L42">    }</span>
+<span class="fc" id="L37">    public PubRelPacket() {</span>
+<span class="fc" id="L38">    	this.type = MqttSnConstants.TYPE_PUBREL;</span>
+<span class="fc" id="L39">    	this.length = 4;</span>
+<span class="fc" id="L40">    	this.messageID = 0;</span>
+<span class="fc" id="L41">    }</span>
     
 	public void decode(byte[] value) {
-<span class="nc" id="L45">		ByteBuffer buffer = ByteBuffer.wrap(value);</span>
-<span class="nc" id="L46">		this.length = (byte) buffer.get();</span>
-<span class="nc" id="L47">		this.type = (byte) buffer.get();</span>
-<span class="nc" id="L48">		this.topicID = (short) buffer.getShort();</span>
-<span class="nc" id="L49">		this.messageID = (short) buffer.getShort();</span>
-<span class="nc" id="L50">	}</span>
+<span class="fc" id="L44">		ByteBuffer buffer = ByteBuffer.wrap(value);</span>
+<span class="fc" id="L45">		this.length = (byte) buffer.get();</span>
+<span class="fc" id="L46">		this.type = (byte) buffer.get();</span>
+<span class="fc" id="L47">		this.messageID = (short) buffer.getShort();</span>
+<span class="fc" id="L48">	}</span>
 	
     public byte[] encode() throws MqttSnClientException {
-<span class="nc" id="L53">    	ByteBuffer buffer = null;</span>
+<span class="fc" id="L51">    	ByteBuffer buffer = null;</span>
 
     	try {
-<span class="nc" id="L56">    		buffer = ByteBuffer.allocate(this.length);</span>
-<span class="nc" id="L57">            buffer.put(length);          </span>
-<span class="nc" id="L58">            buffer.put(type);              </span>
-<span class="nc" id="L59">            buffer.putShort(topicID);        </span>
-<span class="nc" id="L60">            buffer.putShort(messageID);</span>
+<span class="fc" id="L54">    		buffer = ByteBuffer.allocate(this.length);</span>
+<span class="fc" id="L55">            buffer.put(length);          </span>
+<span class="fc" id="L56">            buffer.put(type);              </span>
+<span class="fc" id="L57">            buffer.putShort(messageID);</span>
 
-			
-<span class="nc" id="L63">		} catch (Exception e) {</span>
-<span class="nc" id="L64">			throw new MqttSnClientException(e);</span>
-<span class="nc" id="L65">		}</span>
-<span class="nc" id="L66">    	return buffer.array();</span>
+<span class="nc" id="L59">		} catch (Exception e) {</span>
+<span class="nc" id="L60">			throw new MqttSnClientException(e);</span>
+<span class="fc" id="L61">		}</span>
+<span class="fc" id="L62">    	return buffer.array();</span>
     }
 
 	public byte getLength() {
-<span class="nc" id="L70">		return length;</span>
+<span class="nc" id="L66">		return length;</span>
 	}
 
 	public void setLength(byte length) {
-<span class="nc" id="L74">		this.length = length;</span>
-<span class="nc" id="L75">	}</span>
+<span class="nc" id="L70">		this.length = length;</span>
+<span class="nc" id="L71">	}</span>
 
 	public byte getType() {
-<span class="nc" id="L78">		return type;</span>
+<span class="fc" id="L74">		return type;</span>
 	}
 
 	public void setType(byte type) {
-<span class="nc" id="L82">		this.type = type;</span>
-<span class="nc" id="L83">	}</span>
-
-	public short getTopicID() {
-<span class="nc" id="L86">		return topicID;</span>
-	}
-
-	public void setTopicID(short topicID) {
-<span class="nc" id="L90">		this.topicID = topicID;</span>
-<span class="nc" id="L91">	}</span>
+<span class="nc" id="L78">		this.type = type;</span>
+<span class="nc" id="L79">	}</span>
 
 	public short getMessageID() {
-<span class="nc" id="L94">		return messageID;</span>
+<span class="nc" id="L82">		return messageID;</span>
 	}
 
 	public void setMessageID(short messageID) {
-<span class="nc" id="L98">		this.messageID = messageID;</span>
-<span class="nc" id="L99">	}</span>
+<span class="fc" id="L86">		this.messageID = messageID;</span>
+<span class="fc" id="L87">	}</span>
 	
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

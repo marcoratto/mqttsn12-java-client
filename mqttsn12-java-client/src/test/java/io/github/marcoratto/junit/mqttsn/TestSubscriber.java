@@ -148,6 +148,34 @@ public class TestSubscriber extends TestCase implements MqttSnListener {
 			fail(t.getMessage());
 		}
 	}
+
+	public void testSubscribeNormalTopicQos2() throws MqttSnClientException {
+		System.out.println(this.getClass().getName() + ".testSubscribeNormalTopicQos2()");
+		try {						
+			String expected = "Hello " + (new Random().nextInt() & 0xffff);
+			boolean keep_running = true;
+			
+			this.mqttsnClient.open(MQTT_SN_HOST, MQTT_SN_PORT);
+			this.mqttsnClient.sendConnect();
+			this.mqttsnClient.sendSubscribe("mqttsn/sub", MqttSnConstants.QOS_2, this);
+			
+			this.mqttu.publish("mqttsn/sub", 2, false, expected.getBytes());
+			
+	        while(keep_running) {
+	        	mqttsnClient.polling();
+	        	if (this.actual.equalsIgnoreCase(expected)) {
+	        		keep_running = false;
+	        	}
+			}
+	        assertEquals(this.actual, expected);
+	        
+	        mqttsnClient.sendDisconnect((short) 0);
+	        mqttsnClient.close();
+		} catch (Throwable t) {
+			t.printStackTrace();
+			fail(t.getMessage());
+		}
+	}
 	
 	public void testPing() throws MqttSnClientException {
 		System.out.println(this.getClass().getName() + ".testPing()");

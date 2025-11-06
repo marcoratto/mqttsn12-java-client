@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="64.253" tests="11" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="53.427" tests="12" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="18"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -13,7 +13,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="IT"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-18.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire/surefirebooter-20251020163722300_3.jar /Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire 2025-10-20T16-37-22_251-jvmRun1 surefire-20251020163722300_1tmp surefire_0-20251020163722300_2tmp"/>
+    <property name="sun.java.command" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire/surefirebooter-20251106161815365_3.jar /Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire 2025-11-06T16-18-15_279-jvmRun1 surefire-20251106161815365_1tmp surefire_0-20251106161815365_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/test-classes:/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/classes:/opt/maven_repository/junit/junit/4.13.2/junit-4.13.2.jar:/opt/maven_repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-core/2.20.0/log4j-core-2.20.0.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-api/2.20.0/log4j-api-2.20.0.jar:/opt/maven_repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/opt/maven_repository/org/apache/logging/log4j/log4j-slf4j2-impl/2.20.0/log4j-slf4j2-impl-2.20.0.jar:/opt/maven_repository/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.5/org.eclipse.paho.client.mqttv3-1.2.5.jar:/opt/maven_repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -29,7 +29,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire/surefirebooter-20251020163722300_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/IH00294/Repository/Git/mqttsn12-java-client/mqttsn12-java-client/target/surefire/surefirebooter-20251106161815365_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="18+36-2087"/>
     <property name="user.name" value="IH00294"/>
@@ -53,100 +53,107 @@
     <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
     <property name="java.class.version" value="62.0"/>
   </properties>
-  <testcase name="testSubscribeWildcards" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.906">
+  <testcase name="testSubscribeWildcards" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.849">
     <system-out><![CDATA[testSubscribeWildcards.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeWildcards()
-2025-10-20 16:38:16,898 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Listener for topic name not found. Search by Topic ID
+2025-11-06 16:18:46,044 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Listener for topic name not found. Search by Topic ID
 Ricevuto payload: offline
-2025-10-20 16:38:16,902 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Listener for topic name not found. Search by Topic ID
+2025-11-06 16:18:46,051 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Listener for topic name not found. Search by Topic ID
 Ricevuto payload: offline
-2025-10-20 16:38:16,904 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Listener for topic name not found. Search by Topic ID
-Ricevuto payload: Hello 6371
-Ricevuto payload: Hello 6371
-2025-10-20 16:38:17,416 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Listener for topic name not found. Search by Topic ID
-Ricevuto payload: Hello 6371
-Ricevuto payload: Hello 6371
-2025-10-20 16:38:17,424 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Listener for topic name not found. Search by Topic ID
-Ricevuto payload: Hello 36450
-Ricevuto payload: Hello 36450
-2025-10-20 16:38:17,938 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Listener for topic name not found. Search by Topic ID
-Ricevuto payload: Hello 36450
-Ricevuto payload: Hello 36450
-2025-10-20 16:38:17,945 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Listener for topic name not found. Search by Topic ID
-Ricevuto payload: Hello 54330
-Ricevuto payload: Hello 54330
-2025-10-20 16:38:17,947 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Was expecting 'DISCONNECT' packet but received: PUBLISH
+2025-11-06 16:18:46,054 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Listener for topic name not found. Search by Topic ID
+Ricevuto payload: Hello 46573
+Ricevuto payload: Hello 46573
+2025-11-06 16:18:46,564 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Listener for topic name not found. Search by Topic ID
+Ricevuto payload: Hello 46573
+Ricevuto payload: Hello 46573
+2025-11-06 16:18:46,568 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Listener for topic name not found. Search by Topic ID
+Ricevuto payload: Hello 2323
+Ricevuto payload: Hello 2323
+2025-11-06 16:18:47,078 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Listener for topic name not found. Search by Topic ID
+Ricevuto payload: Hello 2323
+Ricevuto payload: Hello 2323
+2025-11-06 16:18:47,083 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Listener for topic name not found. Search by Topic ID
+Ricevuto payload: Hello 8122
+Ricevuto payload: Hello 8122
+2025-11-06 16:18:47,085 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Was expecting 'DISCONNECT' packet but received: PUBLISH
 testSubscribeWildcards.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testSubscribeBigPayload" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="4.714">
+  <testcase name="testSubscribeBigPayload" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.844">
     <system-out><![CDATA[testSubscribeBigPayload.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeBigPayload()
-Ricevuto payload: Hello 5394Hello 58800Hello 3051Hello 30661Hello 48337Hello 27579Hello 51869Hello 11422Hello 24615Hello 50231
+Ricevuto payload: Hello 49796Hello 10446Hello 22504Hello 36700Hello 4962Hello 30Hello 35021Hello 48299Hello 61803Hello 58946
 testSubscribeBigPayload.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testSubscribeMultipleLongTopicQos1" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.372">
+  <testcase name="testSubscribeMultipleLongTopicQos1" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.357">
     <system-out><![CDATA[testSubscribeMultipleLongTopicQos1.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeMultipleLongTopicQos1()
-Ricevuto payload: Hello 30298
-Ricevuto payload: Hello 38955
-Ricevuto payload: Hello 18096
+Ricevuto payload: Hello 46438
+Ricevuto payload: Hello 53207
+Ricevuto payload: Hello 48233
 testSubscribeMultipleLongTopicQos1.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testSubscribeShortTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.341">
+  <testcase name="testSubscribeShortTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.334">
     <system-out><![CDATA[testSubscribeShortTopic.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeShortTopic()
-Ricevuto payload: Hello 53224
+Ricevuto payload: Hello 20812
 testSubscribeShortTopic.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testUnSubscribeShortTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.338">
+  <testcase name="testUnSubscribeShortTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.334">
     <system-out><![CDATA[testUnSubscribeShortTopic.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testUnSubscribeShortTopic()
 testUnSubscribeShortTopic.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testSubscribeNormalTopicQos0" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.342">
+  <testcase name="testSubscribeNormalTopicQos0" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.333">
     <system-out><![CDATA[testSubscribeNormalTopicQos0.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeNormalTopicQos0()
-Ricevuto payload: Hello 10844
+Ricevuto payload: Hello 18627
 testSubscribeNormalTopicQos0.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testSubscribeNormalTopicQos1" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.342">
+  <testcase name="testSubscribeNormalTopicQos1" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.333">
     <system-out><![CDATA[testSubscribeNormalTopicQos1.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeNormalTopicQos1()
-Ricevuto payload: Hello 23584
+Ricevuto payload: Hello 14672
 testSubscribeNormalTopicQos1.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testPing" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="44.844">
+  <testcase name="testSubscribeNormalTopicQos2" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="0.332">
+    <system-out><![CDATA[testSubscribeNormalTopicQos2.setUp()
+io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeNormalTopicQos2()
+Ricevuto payload: Hello 39048
+testSubscribeNormalTopicQos2.tearDown()
+]]></system-out>
+  </testcase>
+  <testcase name="testPing" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="42.56">
     <system-out><![CDATA[testPing.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testPing()
-2025-10-20 16:38:36,774 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Was expecting 'PUBLISH' packet but received: PINGRESP
-2025-10-20 16:38:48,142 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Was expecting 'PUBLISH' packet but received: PINGRESP
-2025-10-20 16:38:58,171 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Was expecting 'PUBLISH' packet but received: PINGRESP
-2025-10-20 16:39:09,210 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Was expecting 'PUBLISH' packet but received: PINGRESP
-Ricevuto payload: Hello 38559
+2025-11-06 16:19:02,359 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Was expecting 'PUBLISH' packet but received: PINGRESP
+2025-11-06 16:19:12,400 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Was expecting 'PUBLISH' packet but received: PINGRESP
+2025-11-06 16:19:22,448 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Was expecting 'PUBLISH' packet but received: PINGRESP
+2025-11-06 16:19:32,487 [main] WARN  io.github.marcoratto.mqttsn.MqttSnClient - Was expecting 'PUBLISH' packet but received: PINGRESP
+Ricevuto payload: Hello 53305
 testPing.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testSubscribePredefinedTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="6.372">
+  <testcase name="testSubscribePredefinedTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.475">
     <system-out><![CDATA[testSubscribePredefinedTopic.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testSubscribeShortTopic()
-Ricevuto payload: Hello 17989
+Ricevuto payload: Hello 16131
 testSubscribePredefinedTopic.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testUnSubscribeNormalTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.332">
+  <testcase name="testUnSubscribeNormalTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.333">
     <system-out><![CDATA[testUnSubscribeNormalTopic.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testUnSubscribeNormalTopic()
 testUnSubscribeNormalTopic.tearDown()
 ]]></system-out>
   </testcase>
-  <testcase name="testUnSubscribePredefinedTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.345">
+  <testcase name="testUnSubscribePredefinedTopic" classname="io.github.marcoratto.junit.mqttsn.TestSubscriber" time="1.337">
     <system-out><![CDATA[testUnSubscribePredefinedTopic.setUp()
 io.github.marcoratto.junit.mqttsn.TestSubscriber.testUnSubscribeShortTopic()
 testUnSubscribePredefinedTopic.tearDown()
